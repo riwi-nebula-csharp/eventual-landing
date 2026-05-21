@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Manrope:wght@400;500;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#e9ddff",
+                        "secondary-container": "#4d4465",
+                        "primary-container": "#6750a4",
+                        "surface-bright": "#3b383e",
+                        "on-secondary-container": "#bfb2da",
+                        "surface": "#141218",
+                        "on-tertiary-fixed": "#241a00",
+                        "on-surface": "#e6e0e9",
+                        "on-background": "#e6e0e9",
+                        "surface-container-highest": "#36343a",
+                        "inverse-on-surface": "#322f35",
+                        "on-tertiary-container": "#503d00",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "tertiary-fixed": "#ffdf93",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "inverse-surface": "#e6e0e9",
+                        "tertiary": "#e7c365",
+                        "surface-variant": "#36343a",
+                        "outline": "#948e9c",
+                        "error": "#ffb4ab",
+                        "primary-fixed-dim": "#cfbcff",
+                        "outline-variant": "#494551",
+                        "primary-fixed": "#e9ddff",
+                        "on-surface-variant": "#cbc4d2",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary": "#3e2e00",
+                        "on-secondary": "#342b4b",
+                        "tertiary-container": "#c9a74d",
+                        "surface-dim": "#141218",
+                        "error-container": "#93000a",
+                        "primary": "#cfbcff",
+                        "on-primary-container": "#e0d2ff",
+                        "surface-container-low": "#1d1b20",
+                        "surface-container": "#211f24",
+                        "on-primary-fixed": "#22005d",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "on-error": "#690005",
+                        "inverse-primary": "#6750a4",
+                        "surface-container-lowest": "#0f0d13",
+                        "surface-container-high": "#2b292f",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "on-primary": "#381e72",
+                        "surface-tint": "#cfbcff",
+                        "background": "#141218",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "secondary": "#cdc0e9",
+                        "on-secondary-fixed": "#1f1635",
+                        "burgundy": "#800020"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "base": "8px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"],
+                        "body-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(20, 18, 24, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(231, 195, 101, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+        .theatrical-glow {
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        .input-focus-effect:focus {
+            outline: none;
+            border-color: #e7c365;
+            box-shadow: 0 0 0 2px rgba(231, 195, 101, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- Hero/Background Section -->
+<div class="fixed inset-0 z-0">
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10"></div>
+<img alt="Gran Teatro Background" class="w-full h-full object-cover opacity-60" data-alt="A grand, opulent opera house interior viewed from the stage, featuring multiple levels of ornate gold-leaf balconies and plush deep red velvet seating. The atmosphere is filled with cinematic atmosphere and soft, hazy golden stage lighting that creates a prestigious and immersive theatrical mood. Deep shadows in the corners enhance the dramatic luxury and historical heritage of the venue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw2dA63c716tE0K5Wqqj2GAJfPV0KQzZH6GD8N5Sp-8mkJxYKGachKfiXHBXZWeNuk1A_Li60e6z07FAa5IZ01YSsip_eifZ6zqAi82ZtmOa3DLBlfjRvylbP4Ahx291a7LmqiNZjD5F3AMRDUQ_vtv0MVfaDcK7_YEFXRsMbEX8L_kMG81dERdhpc7kHPOxsR4FRY1pbqGEA0Fb0IdQw9YnhEKuNHmpkTajNCa6UO1fm-V2JICwSafoQF0w7LqcXOzvytc87GS2wK"/>
+</div>
+<!-- Header (Shared TopAppBar Logic) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter py-4 bg-surface/40 backdrop-blur-md border-b border-outline-variant/30">
+<div class="text-headline-md font-headline-md font-bold tracking-tight text-tertiary">
+            Teatro Eventual
+        </div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Programación</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Boletería</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Contacto</a>
+</nav>
+<button class="bg-primary/10 text-primary border border-primary/20 px-6 py-2 rounded-lg font-bold hover:bg-primary/20 transition-all active:scale-95">
+            Mi Cuenta
+        </button>
+</header>
+<!-- Main Registration Content -->
+<main class="relative z-20 flex-grow flex items-center justify-center px-4 pt-28 pb-32">
+<div class="glass-card theatrical-glow w-full max-w-lg p-10 rounded-xl">
+<div class="text-center mb-8">
+<h1 class="font-headline-md text-display-lg text-tertiary leading-tight mb-2">Crear Cuenta</h1>
+<p class="font-body-md text-on-surface-variant">Únase a nuestra comunidad y acceda a experiencias exclusivas.</p>
+</div>
+<form class="space-y-5" onsubmit="return false;">
+<!-- Full Name -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 ml-1" for="name">Nombre completo</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">person</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg py-3 pl-12 pr-4 font-body-md input-focus-effect transition-all placeholder:text-on-surface-variant/30" id="name" placeholder="Ej. Juan Pérez" type="text"/>
+</div>
+</div>
+<!-- Email -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 ml-1" for="email">Correo electrónico</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">mail</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg py-3 pl-12 pr-4 font-body-md input-focus-effect transition-all placeholder:text-on-surface-variant/30" id="email" placeholder="email@ejemplo.com" type="email"/>
+</div>
+</div>
+<!-- Phone -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 ml-1" for="phone">Teléfono</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">call</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg py-3 pl-12 pr-4 font-body-md input-focus-effect transition-all placeholder:text-on-surface-variant/30" id="phone" placeholder="+54 11 1234-5678" type="tel"/>
+</div>
+</div>
+<!-- Passwords -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 ml-1" for="password">Contraseña</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">lock</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg py-3 pl-12 pr-4 font-body-md input-focus-effect transition-all placeholder:text-on-surface-variant/30" id="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2 ml-1" for="confirm_password">Confirmar contraseña</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">verified_user</span>
+<input class="w-full bg-surface-container-low border border-outline-variant text-on-surface rounded-lg py-3 pl-12 pr-4 font-body-md input-focus-effect transition-all placeholder:text-on-surface-variant/30" id="confirm_password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+
+
+<!-- Submit Button -->
+<button class="w-full bg-[#800020] hover:bg-[#a00028] text-white font-headline-md py-4 rounded-lg mt-4 transition-all duration-300 shadow-xl active:scale-[0.98] transform flex items-center justify-center gap-2" type="submit">
+                    Crear Cuenta
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="grid gap-base">
+<button class="flex items-center justify-center gap-2 border border-outline-variant hover:bg-surface-container-high py-4 rounded-lg transition-colors group">
+<img alt="Google" class="w-4 h-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWLpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D">
+<span class="text-label-sm font-label-sm">Google</span>
+</button>
+
+</div>
+<div class="text-center mt-6">
+<a class="font-body-md text-tertiary hover:text-tertiary-fixed-dim transition-colors underline underline-offset-4 decoration-tertiary/30" href="#">
+                        ¿Ya tienes cuenta? Inicia sesión
+                    </a>
+</div>
+</form>
+
+</div>
+</main>
+
+
+<!-- Footer Navigation Clusters (Mandated) -->
+<footer class="relative z-20 w-full mt-auto bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant/30 py-8 px-gutter">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-2">
+<span class="font-headline-md text-headline-md font-bold text-tertiary">Teatro Eventual</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2026 Teatro Eventual - Sistema de Gestión Escénica</p>
+</div>
+
+</div>
+</div>
+</footer>
+<!-- Atmosphere & Interactivity Script -->
+<script>
+        // Subtle tilt effect for the card
+        const card = document.querySelector('.glass-card');
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 50;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 50;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+        });
+
+        // Form submission micro-interaction
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Procesando...';
+            btn.classList.add('opacity-80');
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Cuenta Creada';
+                btn.classList.remove('bg-[#800020]');
+                btn.classList.add('bg-green-700');
+            }, 1500);
+        });
+    </script>
+</body></html>
