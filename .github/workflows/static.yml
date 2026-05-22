@@ -46,9 +46,14 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ghcr.io/${{ github.repository }}:latest
             docker stop ${{ github.event.repository.name }} || true
             docker rm ${{ github.event.repository.name }} || true
+            docker image rm ghcr.io/${{ github.repository }}:latest || true
+
+            docker pull ghcr.io/${{ github.repository }}:latest
+
             docker run -d --name ${{ github.event.repository.name }} \
               -p 8064:80 \
               ghcr.io/${{ github.repository }}:latest
+
+            docker exec ${{ github.event.repository.name }} sh -c "wc -c /usr/share/nginx/html/index.html"
