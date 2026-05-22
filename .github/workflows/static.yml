@@ -25,7 +25,10 @@ jobs:
           head -20 index.html
 
       - name: Login GHCR
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+          -u ${{ github.actor }} \
+          --password-stdin
 
       - name: Build image
         run: |
@@ -46,14 +49,20 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+              -u ${{ github.actor }} \
+              --password-stdin
+
             docker stop ${{ github.event.repository.name }} || true
             docker rm ${{ github.event.repository.name }} || true
             docker image rm ghcr.io/${{ github.repository }}:latest || true
 
             docker pull ghcr.io/${{ github.repository }}:latest
 
-            docker run -d --name ${{ github.event.repository.name }} \
+            docker run -d \
+              --name ${{ github.event.repository.name }} \
               -p 8064:80 \
               ghcr.io/${{ github.repository }}:latest
 
-            docker exec ${{ github.event.repository.name }} sh -c "wc -c /usr/share/nginx/html/index.html"
+            docker exec ${{ github.event.repository.name }} \
+              sh -c "wc -c /usr/share/nginx/html/index.html"
