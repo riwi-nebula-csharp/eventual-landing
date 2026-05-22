@@ -1,0 +1,262 @@
+<!DOCTYPE html><html class="dark" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Iniciar Sesión | Gran Teatro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Manrope:wght@400;500;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .theatrical-glow {
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+        .cinematic-vignette {
+            background: radial-gradient(circle at center, transparent 0%, rgba(15, 15, 20, 0.8) 70%, rgba(15, 15, 20, 1) 100%);
+        }
+        .glass-card {
+            backdrop-filter: blur(16px);
+            background: rgba(33, 31, 36, 0.6);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#bfb2da",
+                        "surface-container-high": "#2b292f",
+                        "inverse-surface": "#e6e0e9",
+                        "primary-fixed-dim": "#cfbcff",
+                        "on-tertiary": "#3e2e00",
+                        "inverse-on-surface": "#322f35",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#503d00",
+                        "on-background": "#e6e0e9",
+                        "primary": "#cfbcff",
+                        "surface-container-low": "#1d1b20",
+                        "surface-dim": "#141218",
+                        "outline-variant": "#494551",
+                        "tertiary": "#e7c365",
+                        "surface": "#141218",
+                        "surface-bright": "#3b383e",
+                        "inverse-primary": "#6750a4",
+                        "background": "#141218",
+                        "on-secondary": "#342b4b",
+                        "primary-fixed": "#e9ddff",
+                        "on-surface": "#e6e0e9",
+                        "on-primary": "#381e72",
+                        "surface-container-highest": "#36343a",
+                        "secondary-container": "#4d4465",
+                        "primary-container": "#6750a4",
+                        "secondary-fixed": "#e9ddff",
+                        "secondary-fixed-dim": "#cdc0e9",
+                        "surface-variant": "#36343a",
+                        "on-primary-container": "#e0d2ff",
+                        "on-surface-variant": "#cbc4d2",
+                        "tertiary-fixed-dim": "#e7c365",
+                        "tertiary-container": "#c9a74d",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-primary-fixed": "#22005d",
+                        "secondary": "#cdc0e9",
+                        "surface-tint": "#cfbcff",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#ffdf93",
+                        "error-container": "#93000a",
+                        "on-primary-fixed-variant": "#4f378a",
+                        "on-secondary-fixed-variant": "#4b4263",
+                        "on-tertiary-fixed": "#241a00",
+                        "outline": "#948e9c",
+                        "surface-container": "#211f24",
+                        "on-secondary-fixed": "#1f1635",
+                        "surface-container-lowest": "#0f0d13"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px"
+                    },
+                    fontFamily: {
+                        "body-lg": ["Manrope"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "body-md": ["Manrope"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    fontSize: {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md overflow-hidden selection:bg-tertiary/30">
+<!-- Background Layer with Cinematic Effect -->
+<div class="fixed inset-0 z-0">
+<img class="w-full h-full object-cover" data-alt="A grand historical theater interior seen from a dramatic low angle perspective, capturing the intricate gold leaf detailing on velvet-lined balconies and the vast, dimly lit stage under atmospheric spotlighting. The color palette is dominated by deep charcoals, rich mahogany, and golden highlights that shimmer in the darkness. The mood is sophisticated, silent, and highly prestigious, reflecting a high-end cinematic aesthetic of luxury performance spaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGGQTzu5SYxlrsIw6kEJ2OlnQOkVUCFaISgPLsW1nrGkP_NLsdYASVIiam3xeizwPZejraT1g9DKdVnN2trEUUVzGzg0Uu5YzrWxed-DYVAVXQ2Y6moGvEQM5LZr0_lbwV4kTHiil1EoMJiFTu6UrBYQgGQjRuTLIcQ6CduP-fNC4RKdHGB-FoejW75BKrJertWF_NZYJJTR3VSUGkdKjnpbg0pjn4Nbil74iUaX9sZS4gBW6T7lSE0clqiRFNMX7iuCsDrGy4wmte">
+<div class="absolute inset-0 cinematic-vignette"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop">
+<!-- Header / Logo Area -->
+<header class="mb-gutter text-center animate-fade-in">
+<h1 class="text-headline-md font-headline-md font-bold tracking-tight text-tertiary mb-base">
+                Teatro Eventual
+            </h1>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[320px] mx-auto italic">
+                "Vive la magia del teatro"
+            </p>
+</header>
+<!-- Login Card -->
+<section class="w-full max-w-[440px] glass-card theatrical-glow border border-white/5 rounded-xl p-gutter md:p-10 shadow-2xl relative overflow-hidden">
+<!-- Decorative Accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-50"></div>
+<div class="space-y-gutter">
+<div class="text-center">
+<h2 class="text-display-lg font-display-lg text-on-surface mb-2 tracking-tighter">Bienvenido</h2>
+</div>
+<form class="space-y-base" id="loginForm" onsubmit="return false">
+<!-- Email Field -->
+<div class="space-y-2">
+<label class="text-label-sm font-label-sm text-on-surface-variant px-1" for="email">Correo Electrónico</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-tertiary transition-colors">mail</span>
+<input class="w-full bg-surface-container-lowest/50 border border-outline-variant focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg pl-10 pr-4 py-3 text-body-md font-body-md transition-all outline-none placeholder:text-on-surface-variant/40" id="email" placeholder="usuario@ejemplo.com" required="" type="email">
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center px-1">
+<label class="text-label-sm font-label-sm text-on-surface-variant" for="password">Contraseña</label>
+<a class="text-label-sm font-label-sm text-tertiary hover:underline transition-all" href="#">¿Olvidaste tu clave?</a>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-tertiary transition-colors">lock</span>
+<input class="w-full bg-surface-container-lowest/50 border border-outline-variant focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg pl-10 pr-10 py-3 text-body-md font-body-md transition-all outline-none placeholder:text-on-surface-variant/40" id="password" placeholder="••••••••" required="" type="password">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Submit Button: Red with Gold Hover as per request -->
+ <div class="relative group">
+<button class="w-full mt-gutter bg-[#8B1E3F] hover:bg-[#D4AF37] text-white hover:text-surface-container-lowest font-headline-md text-[18px] py-4 rounded-lg shadow-lg transform active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group" type="submit">
+                        iniciar sesión
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
+</button>
+</div>
+</form>
+<!-- Divider -->
+<div class="flex items-center gap-base my-gutter">
+<div class="h-px bg-outline-variant flex-1"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">O continúa con</span>
+<div class="h-px bg-outline-variant flex-1"></div>
+</div>
+<!-- Social Logins -->
+<div class="grid gap-base">
+<button class="flex items-center justify-center gap-2 border border-outline-variant hover:bg-surface-container-high py-4 rounded-lg transition-colors group">
+<img alt="Google" class="w-4 h-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWLpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D">
+<span class="text-label-sm font-label-sm">Google</span>
+</button>
+
+</div>
+</div>
+<!-- Registration Link -->
+<div class="mt-gutter text-center">
+<p class="text-body-md font-body-md text-on-surface-variant">
+                    ¿Aún no tienes cuenta? 
+                    <a class="text-tertiary font-bold hover:underline" href="#">Únete ahora</a>
+</p>
+</div>
+</section>
+<!-- Footer Help -->
+</main>
+<!-- Interactive Layer: Particle/Atmospheric Dust effect (Canvas) -->
+<canvas class="fixed inset-0 pointer-events-none z-[1] opacity-30" id="atmosphereCanvas" width="1280" height="1024"></canvas>
+<script>
+        // Simple Atmospheric Dust Effect
+        const canvas = document.getElementById('atmosphereCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.2;
+                this.vy = (Math.random() - 0.5) * 0.2;
+                this.size = Math.random() * 1.5;
+                this.alpha = Math.random() * 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // Button Click Effect
+        const loginBtn = document.querySelector('button[type="submit"]');
+        loginBtn.addEventListener('click', (e) => {
+            if(document.getElementById('email').value && document.getElementById('password').value) {
+                loginBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Validando...';
+                setTimeout(() => {
+                    loginBtn.innerHTML = 'Bienvenido';
+                    loginBtn.classList.add('bg-tertiary', 'text-surface');
+                }, 1500);
+            }
+        });
+    </script>
+
+
+</body></html>
