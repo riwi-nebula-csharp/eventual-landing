@@ -30,8 +30,9 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: GITHUB_SHA,GITHUB_REPOSITORY,REPO_NAME
+          envs: GITHUB_SHA,GITHUB_REPOSITORY,REPO_NAME,TOKEN
           script: |
+            docker login ghcr.io -u "tzerk-last" -p $TOKEN
             docker pull ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
             docker stop $REPO_NAME || true
             docker rm $REPO_NAME || true
@@ -42,3 +43,4 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           REPO_NAME: ${{ github.event.repository.name }}
+          TOKEN: ${{ secrets.TOKEN }}
