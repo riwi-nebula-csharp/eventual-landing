@@ -30,10 +30,15 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: GITHUB_SHA,GITHUB_REPOSITORY,REPO_NAME
           script: |
-            docker pull ghcr.io/${{ github.repository }}:${{ github.sha }}
-            docker stop ${{ github.event.repository.name }} || true
-            docker rm ${{ github.event.repository.name }} || true
-            docker run -d --name ${{ github.event.repository.name }} \
+            docker pull ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
+            docker stop $REPO_NAME || true
+            docker rm $REPO_NAME || true
+            docker run -d --name $REPO_NAME \
               -p 8064:80 \
-              ghcr.io/${{ github.repository }}:${{ github.sha }}
+              ghcr.io/$GITHUB_REPOSITORY:$GITHUB_SHA
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          REPO_NAME: ${{ github.event.repository.name }}
