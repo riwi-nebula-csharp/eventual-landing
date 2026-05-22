@@ -1,24 +1,35 @@
 name: Deploy Frontend
+
 on:
   push:
     branches:
       - main
+
 permissions:
   contents: read
   packages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug index
+        run: |
+          pwd
+          ls -lah
+          wc -c index.html
+          head -20 index.html
 
       - name: Login GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build image
         run: |
-          docker build \
+          docker build --no-cache \
             -t ghcr.io/${{ github.repository }}:${{ github.sha }} \
             -t ghcr.io/${{ github.repository }}:latest \
             .
