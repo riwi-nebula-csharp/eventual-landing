@@ -1,0 +1,12 @@
+{
+  "name": "eventual-landing",
+  "version": "1.0.0",
+  "description": "Landing y SPA de Teatro Eventual",
+  "scripts": {
+    "dev": "npx serve . --single",
+    "build": "echo 'Sin build step — proyecto vanilla ES modules'"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}
