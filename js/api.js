@@ -1,7 +1,11 @@
+/**
+ * ============================================================
+ *  api.js — Capa de servicios | Teatro Eventual
+ *  Base URL: https://service.auth.nebula.andrescortes.dev
+ * ============================================================
+ */
 
 const BASE_URL = 'https://service.auth.nebula.andrescortes.dev';
-
-// ── Helpers internos ─────────────────────────────────────────
 
 function buildHeaders(requiresAuth = false) {
   const headers = {
@@ -55,20 +59,12 @@ async function request(endpoint, options = {}, auth = false) {
 //  1. AUTENTICACIÓN PÚBLICA
 // ─────────────────────────────────────────────────────────────
 
-/**
- * POST /api/auth/register
- * @param {{ name, email, password, password_confirmation, phone? }} payload
- */
 export async function register({ name, email, password, password_confirmation, phone = null }) {
   const body = { name, email, password, password_confirmation };
   if (phone) body.phone = phone;
   return request('/api/auth/register', { method: 'POST', body: JSON.stringify(body) });
 }
 
-/**
- * POST /api/auth/login
- * @param {{ email, password }} payload
- */
 export async function login({ email, password }) {
   return request('/api/auth/login', {
     method: 'POST',
@@ -76,18 +72,15 @@ export async function login({ email, password }) {
   });
 }
 
-/**
- * GET /api/auth/google/redirect
- * Redirige el navegador al flujo OAuth de Google.
- */
-export function loginWithGoogle() {
-  window.location.href = `${BASE_URL}/api/auth/google/redirect`;
+export async function loginWithGoogle() {
+  const res = await request('/api/auth/google/redirect', { method: 'GET' });
+  if (res.success && res.data?.url) {
+    window.location.href = res.data.url;
+  } else {
+    console.error('[API] No se pudo obtener la URL de Google:', res.message);
+  }
 }
 
-/**
- * POST /api/auth/forgot-password
- * @param {{ email }} payload
- */
 export async function forgotPassword({ email }) {
   return request('/api/auth/forgot-password', {
     method: 'POST',
@@ -95,10 +88,6 @@ export async function forgotPassword({ email }) {
   });
 }
 
-/**
- * POST /api/auth/reset-password
- * @param {{ token, email, password, password_confirmation }} payload
- */
 export async function resetPassword({ token, email, password, password_confirmation }) {
   return request('/api/auth/reset-password', {
     method: 'POST',
@@ -110,25 +99,14 @@ export async function resetPassword({ token, email, password, password_confirmat
 //  2. AUTENTICACIÓN PROTEGIDA
 // ─────────────────────────────────────────────────────────────
 
-/**
- * GET /api/auth/me
- * Retorna los datos del usuario autenticado.
- */
 export async function me() {
   return request('/api/auth/me', { method: 'GET' }, true);
 }
 
-/**
- * POST /api/auth/logout
- */
 export async function logout() {
   return request('/api/auth/logout', { method: 'POST' }, true);
 }
 
-/**
- * PUT /api/auth/profile
- * @param {{ name?, phone? }} payload
- */
 export async function updateProfile(payload) {
   return request('/api/auth/profile', {
     method: 'PUT',
@@ -136,10 +114,6 @@ export async function updateProfile(payload) {
   }, true);
 }
 
-/**
- * PUT /api/auth/password
- * @param {{ current_password, password, password_confirmation }} payload
- */
 export async function changePassword({ current_password, password, password_confirmation }) {
   return request('/api/auth/password', {
     method: 'PUT',
@@ -151,15 +125,10 @@ export async function changePassword({ current_password, password, password_conf
 //  3. VERIFICACIÓN DE EMAIL
 // ─────────────────────────────────────────────────────────────
 
-/** POST /api/auth/email/resend */
 export async function resendVerificationEmail() {
   return request('/api/auth/email/resend', { method: 'POST' }, true);
 }
 
-/**
- * POST /api/auth/email/verify
- * @param {{ code }} payload
- */
 export async function verifyEmail({ code }) {
   return request('/api/auth/email/verify', {
     method: 'POST',

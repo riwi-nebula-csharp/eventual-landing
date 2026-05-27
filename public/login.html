@@ -1,262 +1,243 @@
-<!DOCTYPE html><html class="dark" lang="es"><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Iniciar Sesión | Gran Teatro</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;family=Manrope:wght@400;500;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .theatrical-glow {
-            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
-        }
-        .cinematic-vignette {
-            background: radial-gradient(circle at center, transparent 0%, rgba(15, 15, 20, 0.8) 70%, rgba(15, 15, 20, 1) 100%);
-        }
-        .glass-card {
-            backdrop-filter: blur(16px);
-            background: rgba(33, 31, 36, 0.6);
-        }
-    </style>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-secondary-container": "#bfb2da",
-                        "surface-container-high": "#2b292f",
-                        "inverse-surface": "#e6e0e9",
-                        "primary-fixed-dim": "#cfbcff",
-                        "on-tertiary": "#3e2e00",
-                        "inverse-on-surface": "#322f35",
-                        "error": "#ffb4ab",
-                        "on-tertiary-container": "#503d00",
-                        "on-background": "#e6e0e9",
-                        "primary": "#cfbcff",
-                        "surface-container-low": "#1d1b20",
-                        "surface-dim": "#141218",
-                        "outline-variant": "#494551",
-                        "tertiary": "#e7c365",
-                        "surface": "#141218",
-                        "surface-bright": "#3b383e",
-                        "inverse-primary": "#6750a4",
-                        "background": "#141218",
-                        "on-secondary": "#342b4b",
-                        "primary-fixed": "#e9ddff",
-                        "on-surface": "#e6e0e9",
-                        "on-primary": "#381e72",
-                        "surface-container-highest": "#36343a",
-                        "secondary-container": "#4d4465",
-                        "primary-container": "#6750a4",
-                        "secondary-fixed": "#e9ddff",
-                        "secondary-fixed-dim": "#cdc0e9",
-                        "surface-variant": "#36343a",
-                        "on-primary-container": "#e0d2ff",
-                        "on-surface-variant": "#cbc4d2",
-                        "tertiary-fixed-dim": "#e7c365",
-                        "tertiary-container": "#c9a74d",
-                        "on-error": "#690005",
-                        "on-tertiary-fixed-variant": "#594400",
-                        "on-primary-fixed": "#22005d",
-                        "secondary": "#cdc0e9",
-                        "surface-tint": "#cfbcff",
-                        "on-error-container": "#ffdad6",
-                        "tertiary-fixed": "#ffdf93",
-                        "error-container": "#93000a",
-                        "on-primary-fixed-variant": "#4f378a",
-                        "on-secondary-fixed-variant": "#4b4263",
-                        "on-tertiary-fixed": "#241a00",
-                        "outline": "#948e9c",
-                        "surface-container": "#211f24",
-                        "on-secondary-fixed": "#1f1635",
-                        "surface-container-lowest": "#0f0d13"
-                    },
-                    borderRadius: {
-                        "DEFAULT": "0.125rem",
-                        "lg": "0.25rem",
-                        "xl": "0.5rem",
-                        "full": "0.75rem"
-                    },
-                    spacing: {
-                        "base": "8px",
-                        "gutter": "24px",
-                        "container-max": "1280px",
-                        "margin-mobile": "16px",
-                        "margin-desktop": "40px"
-                    },
-                    fontFamily: {
-                        "body-lg": ["Manrope"],
-                        "label-sm": ["JetBrains Mono"],
-                        "headline-md": ["Hanken Grotesk"],
-                        "body-md": ["Manrope"],
-                        "display-lg": ["Hanken Grotesk"]
-                    },
-                    fontSize: {
-                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
-                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
-                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
-                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
-                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
-                    }
-                }
-            }
-        }
-    </script>
-</head>
-<body class="bg-surface-container-lowest text-on-surface font-body-md overflow-hidden selection:bg-tertiary/30">
-<!-- Background Layer with Cinematic Effect -->
-<div class="fixed inset-0 z-0">
-<img class="w-full h-full object-cover" data-alt="A grand historical theater interior seen from a dramatic low angle perspective, capturing the intricate gold leaf detailing on velvet-lined balconies and the vast, dimly lit stage under atmospheric spotlighting. The color palette is dominated by deep charcoals, rich mahogany, and golden highlights that shimmer in the darkness. The mood is sophisticated, silent, and highly prestigious, reflecting a high-end cinematic aesthetic of luxury performance spaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGGQTzu5SYxlrsIw6kEJ2OlnQOkVUCFaISgPLsW1nrGkP_NLsdYASVIiam3xeizwPZejraT1g9DKdVnN2trEUUVzGzg0Uu5YzrWxed-DYVAVXQ2Y6moGvEQM5LZr0_lbwV4kTHiil1EoMJiFTu6UrBYQgGQjRuTLIcQ6CduP-fNC4RKdHGB-FoejW75BKrJertWF_NZYJJTR3VSUGkdKjnpbg0pjn4Nbil74iUaX9sZS4gBW6T7lSE0clqiRFNMX7iuCsDrGy4wmte">
-<div class="absolute inset-0 cinematic-vignette"></div>
-</div>
-<!-- Main Content Canvas -->
-<main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop">
-<!-- Header / Logo Area -->
-<header class="mb-gutter text-center animate-fade-in">
-<h1 class="text-headline-md font-headline-md font-bold tracking-tight text-tertiary mb-base">
-                Teatro Eventual
-            </h1>
-<p class="text-body-md font-body-md text-on-surface-variant max-w-[320px] mx-auto italic">
-                "Vive la magia del teatro"
-            </p>
-</header>
-<!-- Login Card -->
-<section class="w-full max-w-[440px] glass-card theatrical-glow border border-white/5 rounded-xl p-gutter md:p-10 shadow-2xl relative overflow-hidden">
-<!-- Decorative Accent -->
-<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-50"></div>
-<div class="space-y-gutter">
-<div class="text-center">
-<h2 class="text-display-lg font-display-lg text-on-surface mb-2 tracking-tighter">Bienvenido</h2>
-</div>
-<form class="space-y-base" id="loginForm" onsubmit="return false">
-<!-- Email Field -->
-<div class="space-y-2">
-<label class="text-label-sm font-label-sm text-on-surface-variant px-1" for="email">Correo Electrónico</label>
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-tertiary transition-colors">mail</span>
-<input class="w-full bg-surface-container-lowest/50 border border-outline-variant focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg pl-10 pr-4 py-3 text-body-md font-body-md transition-all outline-none placeholder:text-on-surface-variant/40" id="email" placeholder="usuario@ejemplo.com" required="" type="email">
-</div>
-</div>
-<!-- Password Field -->
-<div class="space-y-2">
-<div class="flex justify-between items-center px-1">
-<label class="text-label-sm font-label-sm text-on-surface-variant" for="password">Contraseña</label>
-<a class="text-label-sm font-label-sm text-tertiary hover:underline transition-all" href="#">¿Olvidaste tu clave?</a>
-</div>
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-tertiary transition-colors">lock</span>
-<input class="w-full bg-surface-container-lowest/50 border border-outline-variant focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg pl-10 pr-10 py-3 text-body-md font-body-md transition-all outline-none placeholder:text-on-surface-variant/40" id="password" placeholder="••••••••" required="" type="password">
-<button class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
-<span class="material-symbols-outlined">visibility</span>
-</button>
-</div>
-</div>
-<!-- Submit Button: Red with Gold Hover as per request -->
- <div class="relative group">
-<button class="w-full mt-gutter bg-[#8B1E3F] hover:bg-[#D4AF37] text-white hover:text-surface-container-lowest font-headline-md text-[18px] py-4 rounded-lg shadow-lg transform active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group" type="submit">
-                        iniciar sesión
-                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
-</button>
-</div>
-</form>
-<!-- Divider -->
-<div class="flex items-center gap-base my-gutter">
-<div class="h-px bg-outline-variant flex-1"></div>
-<span class="text-label-sm font-label-sm text-on-surface-variant">O continúa con</span>
-<div class="h-px bg-outline-variant flex-1"></div>
-</div>
-<!-- Social Logins -->
-<div class="grid gap-base">
-<button class="flex items-center justify-center gap-2 border border-outline-variant hover:bg-surface-container-high py-4 rounded-lg transition-colors group">
-<img alt="Google" class="w-4 h-4 grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWLpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D">
-<span class="text-label-sm font-label-sm">Google</span>
-</button>
+/**
+ * ============================================================
+ *  view/login.js — Vista de inicio de sesión
+ *  Conectada a POST /api/auth/login + OAuth Google
+ * ============================================================
+ */
 
-</div>
-</div>
-<!-- Registration Link -->
-<div class="mt-gutter text-center">
-<p class="text-body-md font-body-md text-on-surface-variant">
-                    ¿Aún no tienes cuenta? 
-                    <a class="text-tertiary font-bold hover:underline" href="#">Únete ahora</a>
-</p>
-</div>
-</section>
-<!-- Footer Help -->
-</main>
-<!-- Interactive Layer: Particle/Atmospheric Dust effect (Canvas) -->
-<canvas class="fixed inset-0 pointer-events-none z-[1] opacity-30" id="atmosphereCanvas" width="1280" height="1024"></canvas>
-<script>
-        // Simple Atmospheric Dust Effect
-        const canvas = document.getElementById('atmosphereCanvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+import { login }           from '../auth.js';
+import { loginWithGoogle } from '../api.js';
+import { navigate }        from '../router.js';
 
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+// ─────────────────────────────────────────────────────────────
+//  Handlers
+// ─────────────────────────────────────────────────────────────
 
-        window.addEventListener('resize', resize);
-        resize();
+async function handleSubmit(e) {
+  e.preventDefault();
 
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.2;
-                this.vy = (Math.random() - 0.5) * 0.2;
-                this.size = Math.random() * 1.5;
-                this.alpha = Math.random() * 0.5;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
-                    this.reset();
-                }
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(212, 175, 55, ${this.alpha})`;
-                ctx.fill();
-            }
-        }
+  const btn      = document.getElementById('loginBtn');
+  const errorBox = document.getElementById('loginError');
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
 
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle());
-        }
+  btn.disabled  = true;
+  btn.innerHTML = `
+    <span class="material-symbols-outlined"
+          style="font-size:18px;animation:spin 1s linear infinite;">progress_activity</span>
+    Validando...`;
+  errorBox.classList.add('hidden');
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
+  const res = await login({ email, password });
 
-        // Button Click Effect
-        const loginBtn = document.querySelector('button[type="submit"]');
-        loginBtn.addEventListener('click', (e) => {
-            if(document.getElementById('email').value && document.getElementById('password').value) {
-                loginBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Validando...';
-                setTimeout(() => {
-                    loginBtn.innerHTML = 'Bienvenido';
-                    loginBtn.classList.add('bg-tertiary', 'text-surface');
-                }, 1500);
-            }
-        });
-    </script>
+  if (res.success) {
+    btn.innerHTML = `
+      <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+      ¡Bienvenido!`;
+    btn.style.background = '#14532d';
+    setTimeout(() => navigate('/'), 700);
+    return;
+  }
 
+  btn.disabled  = false;
+  btn.innerHTML = `
+    Iniciar Sesión
+    <span class="material-symbols-outlined" style="font-size:18px;">confirmation_number</span>`;
+  errorBox.textContent = res.message || 'Credenciales inválidas.';
+  errorBox.classList.remove('hidden');
+}
 
-</body></html>
+function togglePassword() {
+  const input = document.getElementById('password');
+  const icon  = document.getElementById('toggleIcon');
+  const show  = input.type === 'password';
+  input.type       = show ? 'text' : 'password';
+  icon.textContent = show ? 'visibility_off' : 'visibility';
+}
+
+// ─────────────────────────────────────────────────────────────
+//  Render
+// ─────────────────────────────────────────────────────────────
+
+export async function renderLogin() {
+
+  const appEl = document.querySelector('#app');
+  if (appEl) {
+    appEl.addEventListener('view:mounted', () => {
+      document.getElementById('loginForm')?.addEventListener('submit', handleSubmit);
+      document.getElementById('togglePass')?.addEventListener('click', togglePassword);
+      document.getElementById('btnGoogle')?.addEventListener('click', () => loginWithGoogle());
+    }, { once: true });
+  }
+
+  return `
+    <!-- ── Fondo ── -->
+    <div class="fixed inset-0 z-0">
+      <img class="w-full h-full object-cover"
+           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGGQTzu5SYxlrsIw6kEJ2OlnQOkVUCFaISgPLsW1nrGkP_NLsdYASVIiam3xeizwPZejraT1g9DKdVnN2trEUUVzGzg0Uu5YzrWxed-DYVAVXQ2Y6moGvEQM5LZr0_lbwV4kTHiil1EoMJiFTu6UrBYQgGQjRuTLIcQ6CduP-fNC4RKdHGB-FoejW75BKrJertWF_NZYJJTR3VSUGkdKjnpbg0pjn4Nbil74iUaX9sZS4gBW6T7lSE0clqiRFNMX7iuCsDrGy4wmte"
+           alt="Teatro fondo"/>
+      <div class="absolute inset-0"
+           style="background:linear-gradient(to bottom,
+             rgba(10,10,10,0.75) 0%,
+             rgba(10,10,10,0.50) 50%,
+             rgba(10,10,10,0.90) 100%);"></div>
+    </div>
+
+    <!-- ── Header ── -->
+    <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4"
+            style="background:rgba(10,10,10,0.50);
+                   backdrop-filter:blur(12px);
+                   border-bottom:1px solid rgba(212,175,55,0.12);">
+      <a href="#/" class="font-serif text-xl tracking-widest text-theatreGold">
+        Teatro Eventual
+      </a>
+      <a href="#/register"
+         class="text-[10px] tracking-widest uppercase text-theatreGray hover:text-theatreGold transition-colors">
+        Crear cuenta →
+      </a>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-10">
+
+      <p class="text-[11px] tracking-[0.35em] uppercase italic mb-8 text-center"
+         style="color:rgba(169,169,179,0.6);">
+        "Vive la magia del teatro"
+      </p>
+
+      <!-- Card -->
+      <div class="w-full max-w-[420px] relative"
+           style="background:rgba(10,10,10,0.78);
+                  backdrop-filter:blur(18px);
+                  border:1px solid rgba(212,175,55,0.22);
+                  padding:2.5rem 2.5rem 2rem;">
+
+        <!-- Línea dorada superior -->
+        <div class="absolute top-0 left-0 w-full h-px"
+             style="background:linear-gradient(to right,transparent,#D4AF37,transparent);opacity:0.45;"></div>
+
+        <!-- Título -->
+        <div class="text-center mb-8">
+          <h2 class="font-serif text-theatreBeige" style="font-size:2.25rem;line-height:1.1;">
+            Bienvenido
+          </h2>
+          <p class="text-theatreGray text-sm mt-1">Inicia sesión en tu cuenta</p>
+        </div>
+
+        <!-- Error global -->
+        <div id="loginError"
+             class="hidden mb-5 px-4 py-3 text-sm"
+             style="background:rgba(107,17,29,0.28);
+                    border:1px solid rgba(107,17,29,0.55);
+                    color:#fca5a5;">
+        </div>
+
+        <!-- ── Formulario ── -->
+        <form id="loginForm" class="space-y-5" novalidate>
+
+          <!-- Email -->
+          <div>
+            <label class="block mb-1.5 text-[11px] uppercase tracking-[0.15em] text-theatreGray"
+                   for="email">
+              Correo Electrónico
+            </label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2"
+                    style="font-size:18px;color:rgba(169,169,179,0.5);">mail</span>
+              <input id="email" type="email" placeholder="usuario@ejemplo.com" required
+                     class="w-full pl-10 pr-4 py-3 text-sm text-theatreBeige outline-none transition-all"
+                     style="background:rgba(255,255,255,0.05);
+                            border:1px solid rgba(212,175,55,0.2);"
+                     onfocus="this.style.borderColor='rgba(212,175,55,0.6)'"
+                     onblur="this.style.borderColor='rgba(212,175,55,0.2)'"/>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="text-[11px] uppercase tracking-[0.15em] text-theatreGray" for="password">
+                Contraseña
+              </label>
+              <a href="#"
+                 class="text-[10px] hover:underline transition-colors"
+                 style="color:rgba(212,175,55,0.65);"
+                 onclick="event.preventDefault()">
+                ¿Olvidaste tu clave?
+              </a>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2"
+                    style="font-size:18px;color:rgba(169,169,179,0.5);">lock</span>
+              <input id="password" type="password" placeholder="••••••••" required
+                     class="w-full pl-10 pr-12 py-3 text-sm text-theatreBeige outline-none transition-all"
+                     style="background:rgba(255,255,255,0.05);
+                            border:1px solid rgba(212,175,55,0.2);"
+                     onfocus="this.style.borderColor='rgba(212,175,55,0.6)'"
+                     onblur="this.style.borderColor='rgba(212,175,55,0.2)'"/>
+              <button id="togglePass" type="button"
+                      class="absolute right-3 top-1/2 -translate-y-1/2 transition-colors"
+                      style="color:rgba(169,169,179,0.55);"
+                      onmouseover="this.style.color='#D4AF37'"
+                      onmouseout="this.style.color='rgba(169,169,179,0.55)'">
+                <span id="toggleIcon" class="material-symbols-outlined" style="font-size:18px;">
+                  visibility
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button id="loginBtn" type="submit"
+                  class="w-full mt-1 py-3.5 flex items-center justify-center gap-2
+                         text-[11px] font-bold tracking-[0.2em] uppercase text-white
+                         transition-all duration-300 active:scale-[0.98]"
+                  style="background:#6B111D;"
+                  onmouseover="this.style.filter='brightness(1.25)'"
+                  onmouseout="this.style.filter='brightness(1)'">
+            Iniciar Sesión
+            <span class="material-symbols-outlined" style="font-size:18px;">confirmation_number</span>
+          </button>
+
+        </form>
+
+        <!-- ── Divisor ── -->
+        <div class="flex items-center gap-3 my-6">
+          <div class="h-px flex-1" style="background:rgba(212,175,55,0.15);"></div>
+          <span class="text-[10px] uppercase tracking-widest"
+                style="color:rgba(169,169,179,0.45);">o continúa con</span>
+          <div class="h-px flex-1" style="background:rgba(212,175,55,0.15);"></div>
+        </div>
+
+        <!-- ── Google OAuth ── -->
+        <button id="btnGoogle"
+                class="w-full flex items-center justify-center gap-3 py-3.5
+                       transition-all duration-300 active:scale-[0.98]"
+                style="background:rgba(255,255,255,0.04);
+                       border:1px solid rgba(212,175,55,0.2);"
+                onmouseover="this.style.borderColor='rgba(212,175,55,0.5)';this.style.background='rgba(255,255,255,0.08)'"
+                onmouseout="this.style.borderColor='rgba(212,175,55,0.2)';this.style.background='rgba(255,255,255,0.04)'">
+          <!-- SVG oficial de Google (sin copyright de imagen) -->
+          <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span class="text-[11px] tracking-widest uppercase text-theatreGray">
+            Continuar con Google
+          </span>
+        </button>
+
+        <!-- Link registro -->
+        <p class="text-center text-sm text-theatreGray mt-6">
+          ¿Aún no tienes cuenta?
+          <a href="#/register" class="text-theatreGold font-bold hover:underline ml-1">
+            Únete ahora
+          </a>
+        </p>
+
+      </div>
+    </main>
+  `;
+}
