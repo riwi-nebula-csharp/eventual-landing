@@ -1,134 +1,483 @@
 <!DOCTYPE html>
 <html class="scroll-smooth" lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Gran Teatro - Vive la Magia</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          theatreGold:    '#D4AF37',
-          theatreBurgundy:'#6B111D',
-          theatreDark:    '#0A0A0A',
-          theatreGray:    '#A9A9B3',
-          theatreBeige:   '#F5F1E8',
-        },
-        fontFamily: {
-          serif: ['Playfair Display', 'serif'],
-          sans:  ['Hanken Grotesk', 'sans-serif'],
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+  <title>Gran Teatro - Vive la Magia</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            theatreGold:    '#D4AF37',
+            theatreBurgundy:'#6B111D',
+            theatreDark:    '#050505',
+            theatreGray:    '#A9A9B3',
+            theatreBeige:   '#F5F1E8',
+
+            /* ── Tokens M3 (cartelera) ── */
+            "surface-container-high":     "#2b292f",
+            "surface-dim":                "#141218",
+            "surface-bright":             "#3b383e",
+            "error-container":            "#93000a",
+            "surface-container-highest":  "#36343a",
+            "on-background":              "#e6e0e9",
+            "secondary":                  "#cdc0e9",
+            "primary":                    "#cfbcff",
+            "inverse-on-surface":         "#322f35",
+            "outline-variant":            "#494551",
+            "surface-container-lowest":   "#0f0d13",
+            "on-tertiary":                "#3e2e00",
+            "tertiary-fixed":             "#ffdf93",
+            "surface-container":          "#211f24",
+            "secondary-container":        "#4d4465",
+            "tertiary-container":         "#c9a74d",
+            "inverse-surface":            "#e6e0e9",
+            "on-tertiary-container":      "#503d00",
+            "on-secondary":               "#342b4b",
+            "on-tertiary-fixed":          "#241a00",
+            "background":                 "#141218",
+            "on-primary":                 "#381e72",
+            "primary-container":          "#6750a4",
+            "error":                      "#ffb4ab",
+            "secondary-fixed":            "#e9ddff",
+            "primary-fixed":              "#e9ddff",
+            "on-primary-container":       "#e0d2ff",
+            "on-error":                   "#690005",
+            "outline":                    "#948e9c",
+            "tertiary-fixed-dim":         "#e7c365",
+            "surface-container-low":      "#1d1b20",
+            "on-error-container":         "#ffdad6",
+            "surface-tint":               "#cfbcff",
+            "on-secondary-container":     "#bfb2da",
+            "tertiary":                   "#e7c365",
+            "on-surface":                 "#e6e0e9",
+            "surface-variant":            "#36343a",
+            "surface":                    "#141218",
+            "on-surface-variant":         "#cbc4d2",
+            "on-secondary-fixed-variant": "#4b4263",
+            "on-primary-fixed-variant":   "#4f378a",
+          },
+
+          spacing: {
+            "container-max":  "1280px",
+            "margin-mobile":  "16px",
+            "margin-desktop": "40px",
+            "base":           "8px",
+            "gutter":         "24px",
+          },
+
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans:  ['Hanken Grotesk', 'sans-serif'],
+          },
         }
       }
     }
-  }
-</script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-<style>
-  body {
-    background-color: #0A0A0A;
-    color: #F5F1E8;
-  }
+  </script>
 
-  /* ── HERO ── */
-  .hero-section {
-    position: relative;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('https://popularenlinea.com/Personas/Paginas/premium/content-sections/personalidades-arte/Maria-Castillo/Insumos/imagen296499470.jpg');
-    background-size: cover;
-    background-position: center right;
-    background-repeat: no-repeat;
-    z-index: 0;
-    transform: scale(1.04);
-    transition: transform 8s ease-out;
-  }
-  .hero-section:hover .hero-bg { transform: scale(1.0); }
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Hanken+Grotesk:wght@300;400;500;600&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
 
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background:
-      linear-gradient(to right,  rgba(10,10,10,1) 0%, rgba(10,10,10,0.85) 40%, rgba(10,10,10,0.2) 70%, rgba(10,10,10,0) 100%),
-      linear-gradient(to top,    rgba(10,10,10,0.7) 0%, rgba(10,10,10,0) 40%),
-      linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0) 20%);
-  }
+  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-  /* ── GOLD TEXT ── */
-  .gold-text-gradient {
-    background: linear-gradient(to right, #F4D03F, #D4AF37, #9A7B1D);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+  <style>
 
-  /* ── CARDS ── */
-  .card-border-frame {
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    position: relative;
-  }
-  .card-border-frame::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(212,175,55,0.05) 0%, transparent 60%);
-    pointer-events: none;
-    z-index: 0;
-  }
+    /* =====================================================
+       RESET
+    ===================================================== */
 
-  /* ── FADE IN ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .fade-up  { animation: fadeUp 0.8s ease both; }
-  .delay-1  { animation-delay: 0.15s; }
-  .delay-2  { animation-delay: 0.3s; }
-  .delay-3  { animation-delay: 0.45s; }
-  .delay-4  { animation-delay: 0.6s; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── SPIN (loader) ── */
-  @keyframes spin { to { transform: rotate(360deg); } }
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: #050505;
+      color: #F5F1E8;
+      font-family: 'Hanken Grotesk', sans-serif;
+      overflow-x: hidden;
+    }
 
-  /* ── NAV LINK UNDERLINE ── */
-  .nav-link { position: relative; }
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -3px; left: 0;
-    width: 0; height: 1px;
-    background: #D4AF37;
-    transition: width 0.3s ease;
-  }
-  .nav-link:hover::after { width: 100%; }
+    body {
+      background:
+        radial-gradient(circle at top left,  rgba(107,17,29,.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(212,175,55,.06), transparent 30%),
+        #050505;
+    }
 
-  /* ── GIFT CARD SHINE ── */
-  .gift-card-shine { position: relative; overflow: hidden; }
-  .gift-card-shine::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -75%;
-    width: 50%; height: 200%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
-    transform: skewX(-20deg);
-    transition: left 0.7s ease;
-  }
-  .gift-card-shine:hover::after { left: 125%; }
-</style>
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =====================================================
+       CUSTOM TOKENS
+    ===================================================== */
+
+    :root {
+      --surface:    #050505;
+      --surface-2:  #0A0A0A;
+      --surface-3:  #121212;
+      --border:     rgba(255,255,255,.08);
+      --text:       #F5F1E8;
+      --text-muted: #A9A9B3;
+      --gold:       #D4AF37;
+      --burgundy:   #6B111D;
+    }
+
+    /* =====================================================
+       BACKGROUNDS
+    ===================================================== */
+
+    .bg-surface                { background-color: var(--surface)             !important; }
+    .bg-surface-container      { background-color: #0A0A0A                    !important; }
+    .bg-surface-container-low  { background-color: rgba(255,255,255,.03)       !important; }
+    .bg-surface-container-lowest { background-color: #050505                  !important; }
+    .bg-surface-container-high { background-color: rgba(255,255,255,.06)       !important; }
+
+    /* =====================================================
+       TEXT
+    ===================================================== */
+
+    .text-on-surface         { color: var(--text)       !important; }
+    .text-on-surface-variant { color: var(--text-muted) !important; }
+    .text-error              { color: #ef4444           !important; }
+    .text-tertiary           { color: var(--gold)       !important; }
+
+    /* =====================================================
+       BORDERS
+    ===================================================== */
+
+    .border-outline-variant { border-color: var(--border) !important; }
+
+    /* =====================================================
+       TYPOGRAPHY
+    ===================================================== */
+
+    .font-headline-md               { font-family: 'Playfair Display', serif;   }
+    .font-body-md, .font-label-sm   { font-family: 'Hanken Grotesk', sans-serif; }
+
+    /* font-size helpers usados por la cartelera */
+    .text-label-sm    { font-size: 12px; line-height: 16px; font-weight: 500; }
+    .text-body-md     { font-size: 16px; line-height: 24px; font-weight: 400; }
+    .text-body-lg     { font-size: 18px; line-height: 28px; font-weight: 400; }
+    .text-headline-md { font-size: 32px; line-height: 40px; font-weight: 600; }
+    .text-display-lg  { font-size: 48px; line-height: 56px; font-weight: 700; letter-spacing: -0.02em; }
+
+    /* =====================================================
+       HERO (landing home)
+    ===================================================== */
+
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://popularenlinea.com/Personas/Paginas/premium/content-sections/personalidades-arte/Maria-Castillo/Insumos/imagen296499470.jpg');
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.03);
+      transition: transform 8s ease;
+    }
+
+    .hero-section:hover .hero-bg { transform: scale(1); }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,.65) 100%);
+    }
+
+    /* =====================================================
+       CARTELERA — clases propias
+    ===================================================== */
+
+    .glass-nav {
+      background: rgba(20, 18, 24, 0.8);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-gradient {
+      background: linear-gradient(
+        0deg,
+        #141218 0%,
+        rgba(20,18,24,0.4) 50%,
+        rgba(20,18,24,0) 100%
+      );
+    }
+
+    .card-inner-glow {
+      box-shadow: inset 0 1px 0 0 rgba(255,255,255,0.1);
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+
+    /* ── List view overrides ── */
+    .list-view-active {
+      display: flex         !important;
+      flex-direction: column!important;
+      gap: 1.5rem           !important;
+    }
+    .list-view-active .group {
+      flex-direction: row   !important;
+      height: 180px         !important;
+      align-items: center   !important;
+    }
+    .list-view-active .group > .relative {
+      width: 120px    !important;
+      height: 180px   !important;
+      flex-shrink: 0  !important;
+    }
+    .list-view-active .group > div:nth-child(2) {
+      flex-direction: row         !important;
+      flex-grow: 1                !important;
+      align-items: center         !important;
+      justify-content: space-between !important;
+      gap: 2rem                   !important;
+      padding: 0 2rem             !important;
+    }
+    .list-view-active .group .space-y-1 {
+      margin-bottom: 0  !important;
+      display: flex     !important;
+      gap: 1.5rem       !important;
+    }
+    .list-view-active .group .mt-auto {
+      margin-top: 0         !important;
+      flex-direction: row   !important;
+      gap: 0.5rem           !important;
+      width: auto           !important;
+    }
+    .list-view-active .group .mt-auto button {
+      padding: 0.75rem 1.5rem !important;
+      white-space: nowrap     !important;
+    }
+
+    @media (max-width: 1024px) {
+      .list-view-active .group {
+        height: auto          !important;
+        flex-direction: column!important;
+      }
+      .list-view-active .group > .relative {
+        width: 100%   !important;
+        height: 200px !important;
+      }
+      .list-view-active .group > div:nth-child(2) {
+        flex-direction: column!important;
+        padding: 1.5rem       !important;
+      }
+      .list-view-active .group .space-y-1 {
+        flex-direction: column!important;
+        gap: 0.25rem          !important;
+      }
+    }
+
+    /* =====================================================
+       GLASS CARD
+    ===================================================== */
+
+    .glass-card {
+      background: rgba(10,10,10,.72);
+      border: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    /* =====================================================
+       CARD FRAME
+    ===================================================== */
+
+    .card-border-frame {
+      position: relative;
+      border: 1px solid rgba(212,175,55,.18);
+      background: linear-gradient(180deg, rgba(18,18,18,.96), rgba(10,10,10,.96));
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    }
+
+    /* =====================================================
+       GOLD TEXT
+    ===================================================== */
+
+    .gold-text-gradient {
+      background: linear-gradient(90deg, #F4D03F, #D4AF37, #9A7B1D);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* =====================================================
+       THEATRICAL GLOW
+    ===================================================== */
+
+    .theatrical-glow { position: relative; }
+
+    .theatrical-glow::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(212,175,55,.45), rgba(255,255,255,.04), rgba(122,16,34,.45));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* =====================================================
+       INPUTS
+    ===================================================== */
+
+    .input-theatre {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #F5F1E8;
+      transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .input-theatre:focus {
+      border-color: #D4AF37;
+      background: rgba(255,255,255,.05);
+      box-shadow: 0 0 0 4px rgba(212,175,55,.12);
+      outline: none;
+    }
+
+    /* =====================================================
+       BUTTONS
+    ===================================================== */
+
+    .btn-gold {
+      width: 100%;
+      border-radius: 16px;
+      padding: 15px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #7A1022, #A61B36);
+      color: white;
+      font-weight: 600;
+      transition: transform .2s ease, box-shadow .3s ease, background .3s ease;
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #92203A, #B11F3F);
+      box-shadow: 0 10px 25px rgba(122,16,34,.35);
+    }
+
+    .btn-gold:active { transform: scale(.98); }
+
+    .btn-outline {
+      width: 100%;
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      transition: background .25s ease, border-color .25s ease;
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,.06);
+      border-color: rgba(212,175,55,.25);
+    }
+
+    /* =====================================================
+       DIVIDER
+    ===================================================== */
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: rgba(255,255,255,.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.08);
+    }
+
+    /* =====================================================
+       ERROR BOX
+    ===================================================== */
+
+    .error-badge {
+      border: 1px solid rgba(239,68,68,.2);
+      background: rgba(239,68,68,.08);
+      color: rgb(254 202 202);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+
+    /* =====================================================
+       ANIMATIONS
+    ===================================================== */
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .fade-up  { animation: fadeUp .8s ease both; }
+    .delay-1  { animation-delay: .1s; }
+    .delay-2  { animation-delay: .2s; }
+    .delay-3  { animation-delay: .3s; }
+    .delay-4  { animation-delay: .4s; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .animate-spin   { animation: spin 1s linear infinite; }
+
+    /* =====================================================
+       SCROLLBAR
+    ===================================================== */
+
+    ::-webkit-scrollbar       { width: 10px; }
+    ::-webkit-scrollbar-track { background: #050505; }
+    ::-webkit-scrollbar-thumb { background: rgba(212,175,55,.2); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,.4); }
+
+    /* =====================================================
+       SELECTION
+    ===================================================== */
+
+    ::selection { background: #D4AF37; color: #000; }
+
+  </style>
 </head>
-<body class="font-sans selection:bg-theatreGold selection:text-theatreDark">
 
-  <!-- El SPA monta aquí: home, login, register, dashboard -->
+<body class="font-sans selection:bg-theatreGold selection:text-black">
+
+  <!-- APP -->
   <div id="app"></div>
 
+  <script type="module" src="./js/app.js"></script>
+
 </body>
-<script type="module" src="./js/app.js"></script>
 </html>

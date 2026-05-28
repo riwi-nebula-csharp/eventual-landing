@@ -10,6 +10,7 @@ import { renderLogin }     from './view/login.js';
 import { renderRegister }  from './view/register.js';
 import { renderDashboard } from './view/dashboard.js';
 import { renderCallback }  from './view/callback.js';
+import { renderCartelera } from './view/cartelera.js';
 
 // ── Contenedor principal ──────────────────────────────────────
 const APP_CONTAINER = '#app';
@@ -21,6 +22,7 @@ const routes = [
   { path: 'register',      render: renderRegister,  guard: 'guest' },
   { path: 'dashboard',     render: renderDashboard, guard: 'auth'  },
   { path: 'auth/callback', render: renderCallback,  guard: null    },
+  { path: 'cartelera',     render: renderCartelera, guard: null     },
 ];
 
 // ── 404 ───────────────────────────────────────────────────────
@@ -102,7 +104,7 @@ async function resolve() {
   }
 
   if (route.guard === 'guest' && authed) {
-    navigate('/');
+    navigate('dashboard');
     return;
   }
 

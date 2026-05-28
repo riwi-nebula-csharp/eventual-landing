@@ -136,14 +136,13 @@ export async function renderHome() {
             </span>
           </div>
         </div>
-
-        <!-- Nav Links -->
-        <div class="hidden md:flex items-center space-x-8 text-[10px] font-medium tracking-[0.15em] uppercase text-theatreGray">
-          <a class="nav-link text-theatreGold" href="#/">Inicio</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#cartelera">Cartelera</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#">Nosotros</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#">Contacto</a>
+        <div>
+          <a href="#/cartelera" class="text-theatreBeige text-[9px] tracking-[0.1em] uppercase
+              hover:text-theatreGold transition-colors duration-300">
+              Cartelera
+            </a>
         </div>
+
 
         <!-- Auth Buttons -->
         <div class="flex items-center space-x-3">
@@ -176,7 +175,7 @@ export async function renderHome() {
             Descubre nuestra temporada actual.
           </p>
           <div class="fade-up delay-3 flex flex-wrap gap-4">
-            <a href="#cartelera"
+            <a href="#/login"
                class="px-8 py-3 bg-theatreBurgundy text-white text-[11px] font-bold tracking-[0.2em]
                       uppercase hover:brightness-110 transition-all duration-300">
               VER CARTELERA

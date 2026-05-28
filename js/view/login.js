@@ -1,217 +1,535 @@
 /**
  * ============================================================
- *  view/login.js — Vista de inicio de sesión
- *  Conectada a POST /api/auth/login
+ *  view/login.js — Login Cinemático + Google OAuth
  * ============================================================
  */
 
-import { login }             from '../auth.js';
-import { loginWithGoogle }  from '../api.js';
-import { navigate }               from '../router.js';
+import { login } from '../auth.js';
+import { loginWithGoogle } from '../api.js';
+import { navigate } from '../router.js';
 
-// ─────────────────────────────────────────────────────────────
-//  Handler del formulario
-// ─────────────────────────────────────────────────────────────
+// ============================================================
+// LOGIN NORMAL
+// ============================================================
 
 async function handleSubmit(e) {
   e.preventDefault();
 
-  const btn      = document.getElementById('loginBtn');
+  const btn = document.getElementById('loginBtn');
   const errorBox = document.getElementById('loginError');
-  const email    = document.getElementById('email').value.trim();
+
+  const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
-  // ── UI: estado de carga ──
-  btn.disabled     = true;
-  btn.innerHTML    = `<span class="material-symbols-outlined animate-spin" style="font-size:20px;">progress_activity</span> Validando...`;
+  btn.disabled = true;
+
+  btn.innerHTML = `
+    <span class="material-symbols-outlined animate-spin text-[20px]">
+      progress_activity
+    </span>
+    <span>Verificando...</span>
+  `;
+
   errorBox.classList.add('hidden');
 
-  const res = await login({ email, password });
+  try {
 
-  if (res.success) {
-    btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:20px;">check_circle</span> ¡Bienvenido!`;
-    btn.classList.remove('bg-[#8B1E3F]');
-    btn.classList.add('bg-green-800');
-    window.showToast?.(`Bienvenido, ${res.user?.name ?? ''}`, 'success');
-    setTimeout(() => navigate('dashboard'), 700);
-    return;
+    const res = await login({ email, password });
+
+    // SUCCESS
+    if (res.success) {
+
+      btn.innerHTML = `
+        <span class="material-symbols-outlined text-[20px]">
+          check_circle
+        </span>
+        <span>¡Bienvenido!</span>
+      `;
+
+      btn.classList.remove('bg-[#8B1E3F]');
+      btn.classList.add('bg-green-700');
+
+      window.showToast?.(
+        `Bienvenido ${res.user?.name ?? ''}`,
+        'success'
+      );
+
+      setTimeout(() => {
+        navigate('dashboard');
+      }, 800);
+
+      return;
+    }
+
+    // ERROR
+    btn.disabled = false;
+
+    btn.innerHTML = `
+      <span>Iniciar Sesión</span>
+      <span class="material-symbols-outlined">
+        confirmation_number
+      </span>
+    `;
+
+    errorBox.textContent =
+      res.message || 'Credenciales inválidas';
+
+    errorBox.classList.remove('hidden');
+
+  } catch (err) {
+
+    console.error(err);
+
+    btn.disabled = false;
+
+    btn.innerHTML = `
+      <span>Iniciar Sesión</span>
+      <span class="material-symbols-outlined">
+        confirmation_number
+      </span>
+    `;
+
+    errorBox.textContent =
+      'Error interno del servidor';
+
+    errorBox.classList.remove('hidden');
   }
-
-  // ── Error ──
-  btn.disabled  = false;
-  btn.innerHTML = `Iniciar Sesión <span class="material-symbols-outlined">confirmation_number</span>`;
-  errorBox.textContent = res.message || 'Credenciales inválidas.';
-  errorBox.classList.remove('hidden');
 }
+
+// ============================================================
+// TOGGLE PASSWORD
+// ============================================================
 
 function togglePassword() {
+
   const input = document.getElementById('password');
-  const icon  = document.getElementById('toggleIcon');
-  const show  = input.type === 'password';
-  input.type  = show ? 'text' : 'password';
-  icon.textContent = show ? 'visibility_off' : 'visibility';
+  const icon = document.getElementById('toggleIcon');
+
+  if (!input) return;
+
+  const hidden = input.type === 'password';
+
+  input.type = hidden ? 'text' : 'password';
+
+  icon.textContent =
+    hidden
+      ? 'visibility_off'
+      : 'visibility';
 }
 
-// ─────────────────────────────────────────────────────────────
-//  Render
-// ─────────────────────────────────────────────────────────────
+// ============================================================
+// GOOGLE LOGIN
+// ============================================================
+
+async function handleGoogleLogin() {
+
+  const btn = document.getElementById('btnGoogle');
+
+  btn.disabled = true;
+
+  btn.innerHTML = `
+    <span class="material-symbols-outlined animate-spin text-[20px]">
+      progress_activity
+    </span>
+    <span>Conectando...</span>
+  `;
+
+  try {
+
+    await loginWithGoogle();
+
+  } catch (err) {
+
+    console.error(err);
+
+    window.showToast?.(
+      'No se pudo iniciar sesión con Google',
+      'error'
+    );
+
+    btn.disabled = false;
+
+    btn.innerHTML = `
+      <img
+        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+        class="w-5 h-5"
+        alt="Google"
+      />
+      <span>Continuar con Google</span>
+    `;
+  }
+}
+
+// ============================================================
+// RENDER LOGIN
+// ============================================================
 
 export async function renderLogin() {
 
-  // Registrar handlers tras view:mounted
   const appEl = document.querySelector('#app');
+
   if (appEl) {
-    appEl.addEventListener('view:mounted', () => {
-      document.getElementById('loginForm')?.addEventListener('submit', handleSubmit);
-      document.getElementById('togglePass')?.addEventListener('click', togglePassword);
-      document.getElementById('btnGoogle')?.addEventListener('click', () => loginWithGoogle());
-      document.getElementById('forgotLink')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.showToast?.('Función de recuperación próximamente.', 'info');
-      });
-    }, { once: true });
+
+    appEl.addEventListener(
+      'view:mounted',
+      () => {
+
+        document
+          .getElementById('loginForm')
+          ?.addEventListener('submit', handleSubmit);
+
+        document
+          .getElementById('togglePass')
+          ?.addEventListener('click', togglePassword);
+
+        document
+          .getElementById('btnGoogle')
+          ?.addEventListener('click', handleGoogleLogin);
+
+        document
+          .getElementById('forgotLink')
+          ?.addEventListener('click', (e) => {
+
+            e.preventDefault();
+
+            window.showToast?.(
+              'Recuperación próximamente',
+              'info'
+            );
+          });
+
+        setTimeout(() => {
+          document
+            .getElementById('email')
+            ?.focus();
+        }, 300);
+
+      },
+      { once: true }
+    );
   }
 
   return `
-    <!-- Fondo -->
-    <div class="fixed inset-0 z-0">
-      <img class="w-full h-full object-cover"
-           src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGGQTzu5SYxlrsIw6kEJ2OlnQOkVUCFaISgPLsW1nrGkP_NLsdYASVIiam3xeizwPZejraT1g9DKdVnN2trEUUVzGzg0Uu5YzrWxed-DYVAVXQ2Y6moGvEQM5LZr0_lbwV4kTHiil1EoMJiFTu6UrBYQgGQjRuTLIcQ6CduP-fNC4RKdHGB-FoejW75BKrJertWF_NZYJJTR3VSUGkdKjnpbg0pjn4Nbil74iUaX9sZS4gBW6T7lSE0clqiRFNMX7iuCsDrGy4wmte"
-           alt="Teatro"/>
-      <div class="absolute inset-0 cinematic-vignette"></div>
+  <div class="relative min-h-screen overflow-hidden bg-black">
+
+    <!-- BACKGROUND -->
+    <div class="absolute inset-0 z-0">
+
+      <img
+        src="./img/login-img.png"
+        alt="Theatre"
+        class="w-full h-full object-cover"
+      />
+
+      <!-- OVERLAY -->
+      <div class="absolute inset-0 bg-black/70"></div>
+
+      <!-- GOLD LIGHT -->
+      <div
+        class="absolute inset-0"
+        style="
+          background:
+            radial-gradient(circle at center,
+            rgba(212,175,55,0.12),
+            transparent 60%);
+        "
+      ></div>
+
     </div>
 
-    <!-- Header mínimo -->
-    <header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between
-                   px-gutter py-4 bg-surface/40 backdrop-blur-md border-b border-outline-variant/30">
-      <a href="#/" class="font-headline-md font-bold tracking-tight text-tertiary text-xl">
-        Teatro Eventual
-      </a>
-      <a href="#/register"
-         class="text-[10px] tracking-widest uppercase text-theatreGray hover:text-theatreGold transition-colors">
-        Crear cuenta →
-      </a>
+    <!-- HEADER -->
+    <header
+      class="fixed top-0 left-0 w-full z-50
+             flex items-center justify-between
+             px-6 md:px-10 py-4
+             bg-black/30 backdrop-blur-xl
+             border-b border-white/10"
+    >
+
+<a
+  href="#/home"
+  onclick="history.back(); return false;"
+  class="flex items-center gap-2"
+>
+  <span class="material-symbols-outlined text-[#D4AF37]">
+    arrow_back
+  </span>
+
+  <span class="text-[#D4AF37] font-bold text-lg">
+    Volver
+  </span>
+</a>
+
+
+
     </header>
 
-    <!-- Contenido principal -->
-    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center
-                 px-margin-mobile md:px-margin-desktop pt-20">
+    <!-- MAIN -->
+    <main
+      class="relative z-10
+             min-h-screen
+             flex items-center justify-center
+             px-6 py-24"
+    >
 
-      <!-- Logo/título -->
-      <header class="mb-8 text-center">
-        <h1 class="font-headline-md font-bold tracking-tight text-tertiary text-2xl mb-1">
-          Teatro Eventual
-        </h1>
-        <p class="text-body-md text-on-surface-variant italic max-w-xs mx-auto">
-          "Vive la magia del teatro"
-        </p>
-      </header>
+      <!-- CARD -->
+      <section
+        id="loginCard"
+        class="w-full max-w-[430px]
+               rounded-3xl
+               border border-white/10
+               bg-white/5
+               backdrop-blur-2xl
+               shadow-2xl
+               p-8 md:p-10
+               relative overflow-hidden"
+      >
 
-      <!-- Card -->
-      <section class="w-full max-w-[440px] glass-card theatrical-glow rounded-xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+        <!-- GLOW -->
+        <div
+          class="absolute -top-24 left-1/2 -translate-x-1/2
+                 w-72 h-72 rounded-full
+                 bg-[#D4AF37]/10 blur-3xl"
+        ></div>
 
-        <!-- Línea dorada superior -->
-        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-tertiary to-transparent opacity-50"></div>
+        <!-- HEADER -->
+        <div class="relative z-10 text-center mb-8">
 
-        <div class="space-y-6">
-          <!-- Título -->
-          <div class="text-center">
-            <h2 class="font-display-lg text-on-surface tracking-tighter" style="font-size:2.5rem;line-height:1.1;">
-              Bienvenido
-            </h2>
-            <p class="text-on-surface-variant text-sm mt-1">Inicia sesión en tu cuenta</p>
+          <div
+            class="w-16 h-16 rounded-full
+                   border border-[#D4AF37]/30
+                   bg-white/5
+                   flex items-center justify-center
+                   mx-auto mb-4"
+          >
+
+            <span
+              class="material-symbols-outlined
+                     text-[#D4AF37] text-[28px]"
+            >
+              confirmation_number
+            </span>
+
           </div>
 
-          <!-- Error global -->
-          <div id="loginError"
-               class="hidden bg-error-container/40 border border-error/30 text-error rounded-lg px-4 py-3 text-sm">
-          </div>
+          <h1 class="text-4xl font-bold text-white">
+            Bienvenido
+          </h1>
 
-          <!-- Formulario -->
-          <form id="loginForm" class="space-y-4" novalidate>
-
-            <!-- Email -->
-            <div class="space-y-1.5">
-              <label class="font-label-sm text-on-surface-variant px-1 block" for="email">
-                Correo Electrónico
-              </label>
-              <div class="relative group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2
-                             text-on-surface-variant group-focus-within:text-tertiary transition-colors">
-                  mail
-                </span>
-                <input id="email" type="email" placeholder="usuario@ejemplo.com" required
-                       class="w-full bg-surface-container-lowest/50 border border-outline-variant
-                              focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg
-                              pl-10 pr-4 py-3 font-body-md transition-all outline-none
-                              placeholder:text-on-surface-variant/40 text-on-surface"/>
-              </div>
-            </div>
-
-            <!-- Password -->
-            <div class="space-y-1.5">
-              <div class="flex justify-between items-center px-1">
-                <label class="font-label-sm text-on-surface-variant" for="password">
-                  Contraseña
-                </label>
-                <a id="forgotLink" href="#"
-                   class="font-label-sm text-tertiary hover:underline transition-all">
-                  ¿Olvidaste tu clave?
-                </a>
-              </div>
-              <div class="relative group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2
-                             text-on-surface-variant group-focus-within:text-tertiary transition-colors">
-                  lock
-                </span>
-                <input id="password" type="password" placeholder="••••••••" required
-                       class="w-full bg-surface-container-lowest/50 border border-outline-variant
-                              focus:border-tertiary focus:ring-1 focus:ring-tertiary rounded-lg
-                              pl-10 pr-12 py-3 font-body-md transition-all outline-none
-                              placeholder:text-on-surface-variant/40 text-on-surface"/>
-                <button id="togglePass" type="button"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
-                  <span id="toggleIcon" class="material-symbols-outlined">visibility</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Submit -->
-            <button id="loginBtn" type="submit"
-                    class="w-full mt-2 bg-[#8B1E3F] hover:bg-[#D4AF37] text-white hover:text-surface
-                           font-headline-md py-4 rounded-lg shadow-lg active:scale-[0.98] transition-all
-                           duration-300 flex items-center justify-center gap-2">
-              Iniciar Sesión
-              <span class="material-symbols-outlined">confirmation_number</span>
-            </button>
-          </form>
-
-          <!-- Divisor -->
-          <div class="flex items-center gap-3">
-            <div class="h-px bg-outline-variant flex-1"></div>
-            <span class="font-label-sm text-on-surface-variant whitespace-nowrap">O continúa con</span>
-            <div class="h-px bg-outline-variant flex-1"></div>
-          </div>
-
-          <!-- Google OAuth -->
-          <button id="btnGoogle"
-                  class="w-full flex items-center justify-center gap-2 border border-outline-variant
-                         hover:bg-surface-container-high py-3.5 rounded-lg transition-colors group">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWLpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D"
-                 alt="Google" class="w-5 h-5 grayscale group-hover:grayscale-0 transition-all"/>
-            <span class="font-label-sm">Continuar con Google</span>
-          </button>
-        </div>
-
-        <!-- Link a registro -->
-        <div class="mt-6 text-center">
-          <p class="font-body-md text-on-surface-variant text-sm">
-            ¿Aún no tienes cuenta?
-            <a href="#/register" class="text-tertiary font-bold hover:underline ml-1">Únete ahora</a>
+          <p class="text-white/60 mt-2">
+            Accede a tu cuenta
           </p>
+
         </div>
+
+        <!-- ERROR -->
+        <div
+          id="loginError"
+          class="hidden mb-5
+                 rounded-xl
+                 border border-red-500/20
+                 bg-red-500/10
+                 text-red-200
+                 text-sm
+                 px-4 py-3"
+        ></div>
+
+        <!-- FORM -->
+        <form
+          id="loginForm"
+          class="space-y-5"
+        >
+
+          <!-- EMAIL -->
+          <div class="space-y-2">
+
+            <label class="text-sm text-white/80">
+              Correo Electrónico
+            </label>
+
+            <div class="relative">
+
+              <span
+                class="material-symbols-outlined
+                       absolute left-4 top-1/2 -translate-y-1/2
+                       text-white/40"
+              >
+                mail
+              </span>
+
+              <input
+                id="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="usuario@ejemplo.com"
+                class="w-full
+                       rounded-xl
+                       border border-white/10
+                       bg-white/5
+                       py-3.5 pl-12 pr-4
+                       text-white
+                       placeholder:text-white/30
+                       outline-none
+                       focus:border-[#D4AF37]
+                       focus:ring-2 focus:ring-[#D4AF37]/20"
+              />
+
+            </div>
+
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="space-y-2">
+
+            <div class="flex items-center justify-between">
+
+              <label class="text-sm text-white/80">
+                Contraseña
+              </label>
+
+              <a
+                id="forgotLink"
+                href="#"
+                class="text-xs text-[#D4AF37] hover:underline"
+              >
+                ¿Olvidaste tu clave?
+              </a>
+
+            </div>
+
+            <div class="relative">
+
+              <span
+                class="material-symbols-outlined
+                       absolute left-4 top-1/2 -translate-y-1/2
+                       text-white/40"
+              >
+                lock
+              </span>
+
+              <input
+                id="password"
+                type="password"
+                required
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="w-full
+                       rounded-xl
+                       border border-white/10
+                       bg-white/5
+                       py-3.5 pl-12 pr-12
+                       text-white
+                       placeholder:text-white/30
+                       outline-none
+                       focus:border-[#D4AF37]
+                       focus:ring-2 focus:ring-[#D4AF37]/20"
+              />
+
+              <button
+                id="togglePass"
+                type="button"
+                class="absolute right-4 top-1/2 -translate-y-1/2
+                       text-white/40 hover:text-white"
+              >
+
+                <span
+                  id="toggleIcon"
+                  class="material-symbols-outlined"
+                >
+                  visibility
+                </span>
+
+              </button>
+
+            </div>
+
+          </div>
+
+          <!-- BUTTON -->
+          <button
+            id="loginBtn"
+            type="submit"
+            class="w-full
+                   py-4
+                   rounded-xl
+                   bg-[#8B1E3F]
+                   hover:bg-[#a8244c]
+                   text-white
+                   font-semibold
+                   flex items-center justify-center gap-2
+                   transition-all duration-300"
+          >
+
+            <span>Iniciar Sesión</span>
+
+            <span class="material-symbols-outlined">
+              confirmation_number
+            </span>
+
+          </button>
+
+        </form>
+
+        <!-- DIVIDER -->
+        <div class="flex items-center gap-3 my-6">
+
+          <div class="h-px flex-1 bg-white/10"></div>
+
+          <span
+            class="text-xs uppercase tracking-widest text-white/40"
+          >
+            o continúa con
+          </span>
+
+          <div class="h-px flex-1 bg-white/10"></div>
+
+        </div>
+
+        <!-- GOOGLE -->
+        <button
+          id="btnGoogle"
+          class="w-full
+                 rounded-xl
+                 border border-white/10
+                 bg-white/5 hover:bg-white/10
+                 py-3.5
+                 flex items-center justify-center gap-3
+                 transition-all"
+        >
+
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            class="w-5 h-5"
+            alt="Google"
+          />
+
+          <span class="text-white/90 font-medium">
+            Continuar con Google
+          </span>
+
+        </button>
+
+        <!-- REGISTER -->
+        <p class="mt-7 text-center text-sm text-white/50">
+
+          ¿Aún no tienes cuenta?
+
+          <a
+            href="#/register"
+            class="text-[#D4AF37]
+                   font-semibold
+                   hover:underline ml-1"
+          >
+            Únete ahora →
+          </a>
+
+        </p>
+
       </section>
 
     </main>
+
+  </div>
   `;
 }
