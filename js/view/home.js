@@ -5,42 +5,9 @@
  * ============================================================
  */
 
-import { isAuthenticated, getUser } from '../auth.js';
-import { navigate }                 from '../router.js';
-
-// ─────────────────────────────────────────────────────────────
-//  Datos de cartelera (en producción vendrían de la API)
-// ─────────────────────────────────────────────────────────────
-const SHOWS = [
-  {
-    title: 'La Bella y<br/>la Bestia',
-    genre: 'Musical',
-    date:  '24 MAY • 20:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuCQKrU5Rk9yUX0U0CY-W5C3ciz4Pz3FGg7k8GPCDM3Xjc35Fe7f5ccufTQfxfdjnteM8ZSx73NAjIg7dnbU462HwA-i9YISpB2VR5FEVRsyYD-AHR8rs4ogtff_me--z59Zzp1HPj7s3bBwv9LbvrLLZtu3xdn7Te_NmzUFw13qLIe3Xg7rtDCxC4p_Ew2Y5oC9bPMFwxYE8VvjMbcQEbuHJJRSAoHPXRHB4jx3NXZUjjnBZ5Wft8v9RSy_AkXvh-V0n2muXWvGPgmB',
-  },
-  {
-    title: 'El Fantasma<br/>de la Ópera',
-    genre: 'Musical',
-    date:  '25 MAY • 19:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuDxZXrYfiL6E1ZhVAi-rDdbinzAiDjIqbCSvViaTo6EGwwUJu3fL1zdDEX5ad5rS5UGCZ1-jABkXSRwdU730DBkUzG2wmJF02awW39aDO-Mb1_0rUstDl6oWf_fVwYJTTm5gQ9YpZxcclf3eWUvyeeaiEozggUV898u0fRjEFbl18yX9fYNU3NvEUW4EJyZRNPIDnRvxpHNj3-DiyBzJNK2jvGVS-WosRVIQHHSZz4cX9GQ_w3_3AMeZeb8kI52AdqMyQ1yQiSGnfDH',
-  },
-  {
-    title: 'Los<br/>Miserables',
-    genre: 'Drama',
-    date:  '25 MAY • 19:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuBTZlRRvX_Sv6cB2BBsvWh-HWJtbhq-lYj8ZBgokIJNd0zD5XcU-xibfQbcrz_ODlzHgX1ugFkiHhXMpPia0dKKYca3A7EdUbTrmExq5e-jLlJ0EPM4JVUjDUwqPve4yJC4u2jfGPfUEg3oneaC9gx5TKVwzUC0I6u0as2y5nwkpbGm8bxyk_JX21fze9xtwQOKD6AsVa26OB6WeeEiiY8Tx-HOjCxmG5-8BSntLGcg9g2ZnemoVDy1pok3FlhqR4Rque_tJ6khNG5N',
-  },
-  {
-    title: 'El Lago<br/>de los Cisnes',
-    genre: 'Ballet',
-    date:  '29 MAY • 18:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuBMf8Eltu4RdWgeg8azB1XKFELibTQ5XbzlPaRkvKSNS_C8a8YaJ5r3bL1F6hE5iBFLncjE8wFuzTNWCh431mEpSsVpdiFaOvDYAPkkajzLYPthcTKGpDs9b6ZVhOqIMlHexzf7cr9U-YM_FuKMv3gIsOD3z7WjL3DH46_JlOefFtt0Pulwmb1sEIG9kS7bXu93lQ7uQS6Jh-GnaEYueaA0KxQyeB2Xs9x3Rm2LIu0jXYDAreRk_zxuYK0A6UG0vSm9LsacUDXgYFJm',
-  },
-];
+import { isAuthenticated, getUser }   from '../auth.js';
+import { navigate }                   from '../router.js';
+import { getPlays, getPerformances }  from '../api.js';
 
 // ─────────────────────────────────────────────────────────────
 //  Helpers
@@ -110,28 +77,65 @@ function navAuthButtons() {
 
 export async function renderHome() {
 
+  // ── 1. Cargar datos del API ─────────────────────────────
+  let SHOWS = [];
+  try {
+    const [plays, perfs] = await Promise.all([getPlays(), getPerformances()]);
+    SHOWS = plays.slice(0, 4).map(p => {
+      const perf = perfs
+        .filter(f => f.playId === p.id && f.status !== 'finished')
+        .sort((a, b) => new Date(a.performanceDate) - new Date(b.performanceDate))[0];
+      const d = perf ? new Date(perf.performanceDate) : null;
+      return {
+        title: p.name,
+        genre: 'Teatro',
+        date:  d
+          ? `${d.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' }).toUpperCase()} • ${perf.startTime.slice(0, 5)}`
+          : 'Próximamente',
+        room: 'Sala Principal',
+        img:  p.posterUrl
+          || 'https://placehold.co/400x600/1d1b20/e7c365?text=' + encodeURIComponent(p.name),
+      };
+    });
+  } catch {
+    // Si el API falla el grid queda vacío sin romper la página
+  }
+
+  // ── 2. Registrar handlers post-mount ───────────────────
   const app = document.querySelector('#app');
   if (app) {
     app.addEventListener('view:mounted', () => {
+
       document.getElementById('btn-dashboard')?.addEventListener('click',      () => navigate('dashboard'));
       document.getElementById('btn-hero-dashboard')?.addEventListener('click', () => navigate('dashboard'));
+      document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+        document.getElementById('mobile-menu')?.classList.toggle('hidden');
+      });
 
-      // Scroll activo en nav
+      // Resalta el link de nav según la sección visible
       const navLinks = document.querySelectorAll('[data-nav-link]');
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            navLinks.forEach(l => l.classList.remove('text-theatreGold', 'border-b', 'border-theatreGold/50'));
+            navLinks.forEach(l => {
+              l.classList.remove('text-theatreGold', 'border-b', 'border-theatreGold/50');
+              l.classList.add('text-theatreGray');
+            });
             const active = document.querySelector(`[data-nav-link="${entry.target.id}"]`);
-            active?.classList.add('text-theatreGold', 'border-b', 'border-theatreGold/50');
+            if (active) {
+              active.classList.add('text-theatreGold', 'border-b', 'border-theatreGold/50');
+              active.classList.remove('text-theatreGray');
+            }
           }
         });
       }, { threshold: 0.4 });
 
       document.querySelectorAll('[data-section]').forEach(s => observer.observe(s));
+
     }, { once: true });
   }
 
+  // ── 3. Template ────────────────────────────────────────
   return `
     <!-- ══════════════════════════════════════════
          HEADER
@@ -139,7 +143,7 @@ export async function renderHome() {
     <header class="fixed top-0 w-full z-50 bg-theatreDark/90 backdrop-blur-md border-b border-white/5">
       <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-8">
 
-        <!-- ── Logo ── -->
+        <!-- Logo -->
         <a href="#/" class="flex items-center gap-3 flex-shrink-0 group">
           <svg class="w-8 h-8 text-theatreGold group-hover:scale-110 transition-transform duration-300"
                fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -147,16 +151,12 @@ export async function renderHome() {
                   stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div class="flex flex-col leading-none">
-            <span class="font-serif text-theatreGold text-sm tracking-[0.15em] uppercase">
-              Teatro
-            </span>
-            <span class="font-serif text-theatreBeige text-[10px] tracking-[0.3em] uppercase opacity-60">
-              Eventual
-            </span>
+            <span class="font-serif text-theatreGold text-sm tracking-[0.15em] uppercase">Teatro</span>
+            <span class="font-serif text-theatreBeige text-[10px] tracking-[0.3em] uppercase opacity-60">Eventual</span>
           </div>
         </a>
 
-        <!-- ── Nav links (desktop) ── -->
+        <!-- Nav links desktop -->
         <div class="hidden md:flex items-center gap-8">
           <a href="#/"
              data-nav-link="hero"
@@ -179,14 +179,12 @@ export async function renderHome() {
           </a>
         </div>
 
-        <!-- ── Separador visual ── -->
+        <!-- Separador -->
         <div class="hidden md:block w-px h-5 bg-white/10 flex-shrink-0"></div>
 
-        <!-- ── Auth buttons ── -->
+        <!-- Auth + hamburger -->
         <div class="flex items-center gap-3">
           ${navAuthButtons()}
-
-          <!-- Menú móvil (hamburger) -->
           <button id="mobile-menu-btn"
                   class="md:hidden flex flex-col gap-1 p-2 hover:opacity-70 transition-opacity">
             <span class="w-5 h-px bg-theatreBeige block"></span>
@@ -196,7 +194,7 @@ export async function renderHome() {
         </div>
       </nav>
 
-      <!-- ── Menú móvil desplegable ── -->
+      <!-- Menú móvil -->
       <div id="mobile-menu"
            class="md:hidden hidden border-t border-white/5 bg-theatreDark/95 backdrop-blur-md">
         <div class="flex flex-col px-6 py-4 gap-4">
@@ -217,11 +215,11 @@ export async function renderHome() {
           </a>
           <div class="w-full h-px bg-white/5 my-1"></div>
           ${isAuthenticated()
-            ? `<button onclick="navigate('dashboard')"
+            ? `<button id="btn-mobile-dashboard"
                        class="text-left text-theatreGold text-[10px] tracking-[0.2em] uppercase font-semibold">
                  MI CUENTA
                </button>`
-            : `<a href="#/login"  class="text-theatreBeige text-[10px] tracking-[0.2em] uppercase">INICIAR SESIÓN</a>
+            : `<a href="#/login"    class="text-theatreBeige text-[10px] tracking-[0.2em] uppercase">INICIAR SESIÓN</a>
                <a href="#/register" class="text-theatreBeige text-[10px] tracking-[0.2em] uppercase">REGISTRARSE</a>`
           }
         </div>
@@ -235,7 +233,7 @@ export async function renderHome() {
              class="hero-section"
              style="position:relative;height:100vh;display:flex;align-items:center;overflow:hidden;">
       <div class="hero-bg" style="position:absolute;inset:0;z-index:0;"></div>
-      <div class="hero-overlay" style="position:absolute;inset:0;z-index:1;
+      <div style="position:absolute;inset:0;z-index:1;
         background: linear-gradient(to right,rgba(10,10,10,1) 0%,rgba(10,10,10,.85) 40%,rgba(10,10,10,.2) 70%,rgba(10,10,10,0) 100%),
                     linear-gradient(to top,rgba(10,10,10,.7) 0%,rgba(10,10,10,0) 40%),
                     linear-gradient(to bottom,rgba(10,10,10,.5) 0%,rgba(10,10,10,0) 20%);"></div>
@@ -280,9 +278,6 @@ export async function renderHome() {
                  </a>`
             }
           </div>
-
-          <!-- Stats rápidas -->
-        
         </div>
       </div>
 
@@ -297,13 +292,9 @@ export async function renderHome() {
          CARTELERA
     ════════════════════════════════════════════ -->
     <section data-section id="cartelera" class="py-24 bg-theatreDark relative">
-
-      <!-- Línea decorativa lateral -->
       <div class="absolute left-0 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-theatreGold/20 to-transparent"></div>
 
       <div class="max-w-7xl mx-auto px-6">
-
-        <!-- Título con badge -->
         <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <p class="text-theatreGold text-[9px] tracking-[0.4em] uppercase mb-3 opacity-70">
@@ -326,29 +317,30 @@ export async function renderHome() {
           </a>
         </div>
 
-        <!-- Grid de obras -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          ${SHOWS.map(cardHTML).join('')}
+          ${SHOWS.length > 0
+            ? SHOWS.map(cardHTML).join('')
+            : `<div class="col-span-4 text-center py-16 text-theatreGray opacity-50">
+                 No hay funciones disponibles en este momento.
+               </div>`
+          }
         </div>
       </div>
     </section>
 
     <!-- ══════════════════════════════════════════
-         FEATURES BAR
+         FEATURES
     ════════════════════════════════════════════ -->
     <section class="bg-black py-16 border-t border-white/5 relative overflow-hidden">
-
-      <!-- Glow de fondo -->
       <div class="absolute inset-0 pointer-events-none"
            style="background:radial-gradient(ellipse at 50% 100%,rgba(107,17,29,.12),transparent 60%);"></div>
-
       <div class="max-w-7xl mx-auto px-6 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
           ${[
             { icon: 'confirmation_number', title: 'Reserva en Línea',  desc: 'Compra tus entradas de forma segura desde cualquier dispositivo.' },
             { icon: 'star',                title: 'Experiencia Única',  desc: 'Más de 50 años llevando el mejor teatro a tu ciudad.'             },
             { icon: 'workspace_premium',   title: 'Palcos Exclusivos',  desc: 'Acceso prioritario para miembros y abonados de temporada.'         },
-          ].map((f, i) => `
+          ].map(f => `
             <div class="flex flex-col items-center group">
               <div class="w-14 h-14 rounded-full border border-theatreGold/20 flex items-center justify-center
                           mb-5 group-hover:border-theatreGold/50 group-hover:bg-theatreGold/5 transition-all duration-300">
@@ -402,8 +394,6 @@ export async function renderHome() {
     <footer class="bg-black py-12 border-t border-white/5">
       <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col md:flex-row justify-between items-start gap-10 mb-10">
-
-          <!-- Marca -->
           <div class="flex flex-col gap-4 max-w-xs">
             <div class="flex items-center gap-3">
               <svg class="w-7 h-7 text-theatreGold" fill="none" stroke="currentColor"
@@ -418,13 +408,12 @@ export async function renderHome() {
             </p>
           </div>
 
-          <!-- Links -->
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 text-[10px]">
             <div class="flex flex-col gap-3">
               <span class="text-theatreGold tracking-[0.2em] uppercase font-semibold">Programa</span>
-              <a href="#/cartelera" class="text-theatreGray hover:text-theatreGold transition-colors">Cartelera</a>
-              <a href="#"           class="text-theatreGray hover:text-theatreGold transition-colors">Abonos</a>
-              <a href="#"           class="text-theatreGray hover:text-theatreGold transition-colors">Archivo</a>
+              <a href="#/cartelera"  class="text-theatreGray hover:text-theatreGold transition-colors">Cartelera</a>
+              <a href="#"            class="text-theatreGray hover:text-theatreGold transition-colors">Abonos</a>
+              <a href="#"            class="text-theatreGray hover:text-theatreGold transition-colors">Archivo</a>
             </div>
             <div class="flex flex-col gap-3">
               <span class="text-theatreGold tracking-[0.2em] uppercase font-semibold">Teatro</span>
@@ -434,16 +423,14 @@ export async function renderHome() {
             </div>
             <div class="flex flex-col gap-3">
               <span class="text-theatreGold tracking-[0.2em] uppercase font-semibold">Cuenta</span>
-              <a href="#/login"    class="text-theatreGray hover:text-theatreGold transition-colors">Iniciar sesión</a>
-              <a href="#/register" class="text-theatreGray hover:text-theatreGold transition-colors">Registrarse</a>
+              <a href="#/login"     class="text-theatreGray hover:text-theatreGold transition-colors">Iniciar sesión</a>
+              <a href="#/register"  class="text-theatreGray hover:text-theatreGold transition-colors">Registrarse</a>
               <a href="#/dashboard" class="text-theatreGray hover:text-theatreGold transition-colors">Mi dashboard</a>
             </div>
           </div>
         </div>
 
-        <!-- Bottom bar -->
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4
-                    pt-8 border-t border-white/5">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/5">
           <p class="text-[8px] text-theatreGray/40 uppercase tracking-[0.5em] font-medium">
             © 2025 Gran Teatro. Todos los derechos reservados.
           </p>
