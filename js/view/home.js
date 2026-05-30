@@ -77,6 +77,12 @@ function navAuthButtons() {
 
 export async function renderHome() {
 
+  // Si el usuario ya está logueado, redirigir a cartelera
+  if (isAuthenticated()) {
+    navigate('cartelera');
+    return '<div></div>';
+  }
+
   // ── 1. Cargar datos del API ─────────────────────────────
   let SHOWS = [];
   try {
@@ -137,93 +143,43 @@ export async function renderHome() {
 
   // ── 3. Template ────────────────────────────────────────
   return `
+
     <!-- ══════════════════════════════════════════
-         HEADER
+         HEADER SIMPLE
     ════════════════════════════════════════════ -->
-    <header class="fixed top-0 w-full z-50 bg-theatreDark/90 backdrop-blur-md border-b border-white/5">
-      <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-8">
-
-        <!-- Logo -->
-        <a href="#/" class="flex items-center gap-3 flex-shrink-0 group">
-          <svg class="w-8 h-8 text-theatreGold group-hover:scale-110 transition-transform duration-300"
-               fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-            <path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M2 10l10-7 10 7M10 14h4"
-                  stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <div class="flex flex-col leading-none">
-            <span class="font-serif text-theatreGold text-sm tracking-[0.15em] uppercase">Teatro</span>
-            <span class="font-serif text-theatreBeige text-[10px] tracking-[0.3em] uppercase opacity-60">Eventual</span>
-          </div>
-        </a>
-
-        <!-- Nav links desktop -->
-        <div class="hidden md:flex items-center gap-8">
-          <a href="#/"
-             data-nav-link="hero"
-             class="text-theatreGold text-[9px] font-semibold tracking-[0.2em] uppercase
-                    border-b border-theatreGold/50 pb-0.5 transition-all duration-300">
-            INICIO
-          </a>
-          <a href="#cartelera"
-             data-nav-link="cartelera"
-             class="text-theatreGray text-[9px] font-semibold tracking-[0.2em] uppercase
-                    hover:text-theatreGold transition-all duration-300 pb-0.5
-                    border-b border-transparent hover:border-theatreGold/50">
-            CARTELERA
-          </a>
-          <a href="#/cartelera"
-             class="text-theatreGray text-[9px] font-semibold tracking-[0.2em] uppercase
-                    hover:text-theatreGold transition-all duration-300 pb-0.5
-                    border-b border-transparent hover:border-theatreGold/50">
-            VER TODO
-          </a>
-        </div>
-
-        <!-- Separador -->
-        <div class="hidden md:block w-px h-5 bg-white/10 flex-shrink-0"></div>
-
-        <!-- Auth + hamburger -->
-        <div class="flex items-center gap-3">
-          ${navAuthButtons()}
-          <button id="mobile-menu-btn"
-                  class="md:hidden flex flex-col gap-1 p-2 hover:opacity-70 transition-opacity">
-            <span class="w-5 h-px bg-theatreBeige block"></span>
-            <span class="w-5 h-px bg-theatreBeige block"></span>
-            <span class="w-3 h-px bg-theatreGold block"></span>
-          </button>
-        </div>
-      </nav>
-
-      <!-- Menú móvil -->
-      <div id="mobile-menu"
-           class="md:hidden hidden border-t border-white/5 bg-theatreDark/95 backdrop-blur-md">
-        <div class="flex flex-col px-6 py-4 gap-4">
-          <a href="#/"
-             class="text-theatreGold text-[10px] tracking-[0.2em] uppercase font-semibold">
-            INICIO
-          </a>
-          <a href="#cartelera"
-             class="text-theatreGray text-[10px] tracking-[0.2em] uppercase font-semibold
-                    hover:text-theatreGold transition-colors"
-             onclick="document.getElementById('mobile-menu').classList.add('hidden')">
-            CARTELERA
-          </a>
-          <a href="#/cartelera"
-             class="text-theatreGray text-[10px] tracking-[0.2em] uppercase font-semibold
-                    hover:text-theatreGold transition-colors">
-            VER TODO
-          </a>
-          <div class="w-full h-px bg-white/5 my-1"></div>
-          ${isAuthenticated()
-            ? `<button id="btn-mobile-dashboard"
-                       class="text-left text-theatreGold text-[10px] tracking-[0.2em] uppercase font-semibold">
-                 MI CUENTA
-               </button>`
-            : `<a href="#/login"    class="text-theatreBeige text-[10px] tracking-[0.2em] uppercase">INICIAR SESIÓN</a>
-               <a href="#/register" class="text-theatreBeige text-[10px] tracking-[0.2em] uppercase">REGISTRARSE</a>`
-          }
-        </div>
+    <header style="position:fixed;top:0;left:0;width:100%;z-index:100;
+                   display:flex;align-items:center;justify-content:space-between;
+                   padding:0 40px;height:72px;
+                   background:rgba(5,5,5,.85);backdrop-filter:blur(14px);
+                   border-bottom:1px solid rgba(255,255,255,.08);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg style="width:28px;height:28px;color:#D4AF37;" fill="none" stroke="currentColor"
+             stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M2 10l10-7 10 7M10 14h4"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span style="font-family:'Playfair Display',serif;color:#D4AF37;
+                     letter-spacing:.2em;text-transform:uppercase;font-size:15px;">Teatro Eventual</span>
       </div>
+      <nav style="display:flex;align-items:center;gap:12px;">
+        <a href="#/login"
+           style="padding:8px 20px;border:1px solid rgba(255,255,255,.2);
+                  font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+                  color:#F5F1E8;transition:all .25s;text-decoration:none;"
+           onmouseover="this.style.background='rgba(255,255,255,.05)'"
+           onmouseout="this.style.background='transparent'">
+          INICIAR SESIÓN
+        </a>
+        <a href="#/register"
+           style="display:flex;align-items:center;gap:8px;padding:8px 20px;
+                  background:#6B111D;color:#fff;font-size:9px;font-weight:600;
+                  letter-spacing:.12em;text-transform:uppercase;transition:all .25s;text-decoration:none;"
+           onmouseover="this.style.filter='brightness(1.15)'"
+           onmouseout="this.style.filter='brightness(1)'">
+          <span class="material-symbols-outlined" style="font-size:14px;">confirmation_number</span>
+          REGISTRARSE
+        </a>
+      </nav>
     </header>
 
     <!-- ══════════════════════════════════════════
@@ -238,7 +194,7 @@ export async function renderHome() {
                     linear-gradient(to top,rgba(10,10,10,.7) 0%,rgba(10,10,10,0) 40%),
                     linear-gradient(to bottom,rgba(10,10,10,.5) 0%,rgba(10,10,10,0) 20%);"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+      <div class="relative z-10 max-w-7xl mx-auto px-6 w-full" style="padding-top:72px;">
         <div class="max-w-2xl">
           <div class="fade-up flex items-center gap-3 mb-6">
             <div class="w-8 h-px bg-theatreGold/60"></div>
@@ -252,31 +208,22 @@ export async function renderHome() {
           </h1>
           <p class="fade-up delay-2 text-theatreGray text-lg md:text-xl mb-10 font-light tracking-wide max-w-lg leading-relaxed">
             Donde las historias cobran vida y el arte trasciende el tiempo.
-            Descubre nuestra temporada actual.
+            Inicia sesión para descubrir nuestra temporada actual.
           </p>
           <div class="fade-up delay-3 flex flex-wrap gap-4">
-            <a href="#/cartelera"
+            <a href="#/login"
                class="flex items-center gap-2 px-8 py-3 bg-theatreBurgundy text-white text-[11px]
                       font-bold tracking-[0.2em] uppercase hover:brightness-110 transition-all duration-300">
               <span class="material-symbols-outlined text-[16px]">theater_comedy</span>
               VER CARTELERA
             </a>
-            ${isAuthenticated()
-              ? `<button id="btn-hero-dashboard"
-                         class="flex items-center gap-2 px-8 py-3 border border-theatreGold/50 text-theatreGold
-                                text-[11px] font-bold tracking-[0.2em] uppercase
-                                hover:bg-theatreGold/10 transition-all duration-300">
-                   <span class="material-symbols-outlined text-[16px]">person</span>
-                   MI CUENTA
-                 </button>`
-              : `<a href="#/login"
-                   class="flex items-center gap-2 px-8 py-3 border border-theatreGold/50 text-theatreGold
-                          text-[11px] font-bold tracking-[0.2em] uppercase
-                          hover:bg-theatreGold/10 transition-all duration-300">
-                   <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
-                   RESERVAR ENTRADAS
-                 </a>`
-            }
+            <a href="#/register"
+               class="flex items-center gap-2 px-8 py-3 border border-theatreGold/50 text-theatreGold
+                      text-[11px] font-bold tracking-[0.2em] uppercase
+                      hover:bg-theatreGold/10 transition-all duration-300">
+              <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
+              CREAR CUENTA
+            </a>
           </div>
         </div>
       </div>
@@ -309,10 +256,10 @@ export async function renderHome() {
               <div class="w-10 h-px bg-theatreGold/40"></div>
             </div>
           </div>
-          <a href="#/cartelera"
+          <a href="#/login"
              class="flex items-center gap-2 text-theatreGold text-[9px] tracking-[0.2em]
                     uppercase hover:gap-3 transition-all duration-300 self-end md:self-auto">
-            Ver cartelera completa
+            Iniciar sesión para ver más
             <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
           </a>
         </div>
@@ -411,7 +358,7 @@ export async function renderHome() {
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-8 text-[10px]">
             <div class="flex flex-col gap-3">
               <span class="text-theatreGold tracking-[0.2em] uppercase font-semibold">Programa</span>
-              <a href="#/cartelera"  class="text-theatreGray hover:text-theatreGold transition-colors">Cartelera</a>
+              <a href="#/login"  class="text-theatreGray hover:text-theatreGold transition-colors">Cartelera</a>
               <a href="#"            class="text-theatreGray hover:text-theatreGold transition-colors">Abonos</a>
               <a href="#"            class="text-theatreGray hover:text-theatreGold transition-colors">Archivo</a>
             </div>

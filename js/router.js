@@ -11,6 +11,7 @@ import { renderRegister }  from './view/register.js';
 import { renderDashboard } from './view/dashboard.js';
 import { renderCallback }  from './view/callback.js';
 import { renderCartelera } from './view/cartelera.js';
+import { renderDetail }    from './view/detail.js';
 
 // ── Contenedor principal ──────────────────────────────────────
 const APP_CONTAINER = '#app';
@@ -22,7 +23,7 @@ const routes = [
   { path: 'register',      render: renderRegister,  guard: 'guest' },
   { path: 'dashboard',     render: renderDashboard, guard: 'auth'  },
   { path: 'auth/callback', render: renderCallback,  guard: null    },
-  { path: 'cartelera',     render: renderCartelera, guard: null     },
+  { path: 'cartelera',     render: renderCartelera, guard: 'auth'  },
 ];
 
 // ── 404 ───────────────────────────────────────────────────────
@@ -88,6 +89,26 @@ async function resolve() {
   const hash = window.location.hash.replace(/^#\/?/, '');
   const path = hash === '' ? '/' : hash;
 
+  // ── Dynamic route: play/:id ───────────────────────────────
+  const playMatch = path.match(/^play\/([\w-]+)$/);
+  if (playMatch) {
+    if (!isAuthenticated()) {
+      navigate('login');
+      return;
+    }
+    const playId = playMatch[1];
+    app.innerHTML = renderLoader();
+    try {
+      const html = await renderDetail(playId);
+      app.innerHTML = html;
+      app.dispatchEvent(new CustomEvent('view:mounted', { detail: { path: `play/${playId}` } }));
+    } catch (err) {
+      console.error('[Router] Error al renderizar detalle:', err);
+      app.innerHTML = renderNotFound();
+    }
+    return;
+  }
+
   const route = routes.find(r => r.path === path);
 
   if (!route) {
@@ -104,7 +125,7 @@ async function resolve() {
   }
 
   if (route.guard === 'guest' && authed) {
-    navigate('dashboard');
+    navigate('cartelera');
     return;
   }
 

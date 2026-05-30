@@ -6,6 +6,7 @@
 
 import { navigate }                  from '../router.js';
 import { getPlays, getPerformances } from '../api.js';
+import { getUser, logout }           from '../auth.js';
 
 // ─────────────────────────────────────────────────────────────
 //  Helpers
@@ -252,31 +253,32 @@ export async function renderCartelera() {
         gridBtn.classList.add('text-on-surface-variant');
       });
 
-      // Detalle de obra
+      // Detalle de obra — navega a la ruta dedicada
       app.addEventListener('click', e => {
         const btn = e.target.closest('.btn-detalle');
         if (!btn) return;
         const card = btn.closest('[data-id]');
         const id   = card?.dataset.id;
-        const obra = obras.find(o => String(o.id) === id);
-        if (!obra) return;
+        if (!id) return;
+        navigate(`play/${id}`);
+      });
 
-        const perf = nextPerf(obra.id, funcs);
-        const main = document.getElementById('cartelera-main');
-        if (!main) return;
+      // Logout
+      document.getElementById('btn-logout')?.addEventListener('click', async () => {
+        await logout();
+        navigate('/');
+      });
 
-        main.innerHTML = detailHTML(obra, perf);
-
-        document.getElementById('btn-back-cartelera')?.addEventListener('click', () => {
-          navigate('cartelera');
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Profile
+      document.getElementById('btn-profile')?.addEventListener('click', () => {
+        navigate('dashboard');
       });
 
     }, { once: true });
   }
 
   // ── 3. Template ─────────────────────────────────────────
+  const user = getUser();
   return `
   <header class="fixed top-0 w-full z-50 border-b border-outline-variant/30"
           style="background:rgba(20,18,24,0.9);backdrop-filter:blur(12px);">
@@ -285,11 +287,6 @@ export async function renderCartelera() {
         <h1 class="tracking-tight text-tertiary font-bold"
             style="font-size:1.5rem;font-family:'Playfair Display',serif;">Gran Teatro</h1>
         <nav class="hidden md:flex items-center gap-6">
-          <a href="#/"
-             class="text-on-surface-variant hover:text-tertiary transition-colors
-                    font-label-sm text-label-sm tracking-[0.15em] uppercase">
-            INICIO
-          </a>
           <a href="#/cartelera"
              class="text-tertiary font-label-sm text-label-sm tracking-[0.15em] uppercase
                     border-b border-tertiary pb-0.5">
@@ -305,12 +302,20 @@ export async function renderCartelera() {
                         text-on-surface w-40 placeholder:text-on-surface-variant"
                  placeholder="Buscar obras..." type="text" id="search-input">
         </div>
-        <button class="bg-tertiary-container text-on-tertiary-container px-6 py-2 rounded-full
-                       font-label-sm text-label-sm hover:bg-tertiary hover:text-on-tertiary
-                       transition-all flex items-center gap-2">
-          <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
-          Tickets
+        ${user ? `
+        <button id="btn-profile"
+                class="flex items-center gap-2 text-on-surface-variant hover:text-tertiary
+                       transition-colors font-label-sm text-label-sm tracking-widest">
+          <span class="material-symbols-outlined text-[20px]">person</span>
+          <span class="hidden md:inline">${user.name?.split(' ')[0] ?? 'Mi cuenta'}</span>
         </button>
+        <button id="btn-logout"
+                class="flex items-center gap-2 px-4 py-2 border border-outline-variant/30
+                       text-on-surface-variant hover:text-error hover:border-error/40
+                       transition-all font-label-sm text-label-sm tracking-widest rounded-full">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+          <span class="hidden md:inline">SALIR</span>
+        </button>` : ''}
       </div>
     </div>
   </header>

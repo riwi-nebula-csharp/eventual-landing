@@ -78,7 +78,7 @@ export async function initAuth() {
   const res = await me();
 
   if (res.success) {
-    _user = res.data.user;
+    _user = res.data;
     localStorage.setItem(USER_KEY, JSON.stringify(_user));
     return true;
   }

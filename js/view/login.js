@@ -55,7 +55,7 @@ async function handleSubmit(e) {
       );
 
       setTimeout(() => {
-        navigate('dashboard');
+        navigate('cartelera');
       }, 800);
 
       return;
@@ -247,8 +247,7 @@ export async function renderLogin() {
     >
 
 <a
-  href="#/home"
-  onclick="history.back(); return false;"
+  href="#/"
   class="flex items-center gap-2"
 >
   <span class="material-symbols-outlined text-[#D4AF37]">

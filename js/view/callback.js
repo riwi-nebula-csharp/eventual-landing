@@ -29,7 +29,7 @@ export async function renderCallback() {
   const res = await me();
 
   if (res.success) {
-    localStorage.setItem('auth_user', JSON.stringify(res.data.user));
+    localStorage.setItem('auth_user', JSON.stringify(res.data));
   } else {
     console.warn('[Callback] No se pudo obtener el usuario:', res.message);
   }

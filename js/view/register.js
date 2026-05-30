@@ -128,9 +128,9 @@ async function handleSubmit(e) {
     </span>
   `;
 
-  if (res.data && typeof res.data === 'object') {
+  if (res.errors && typeof res.errors === 'object') {
 
-    Object.entries(res.data).forEach(([field, msgs]) => {
+    Object.entries(res.errors).forEach(([field, msgs]) => {
       showFieldError(
         field,
         Array.isArray(msgs) ? msgs[0] : msgs
@@ -303,7 +303,6 @@ export async function renderRegister() {
               rgba(20,0,0,0.82) 35%,
               rgba(60,0,0,0.45) 65%,
               rgba(0,0,0,0.82) 100%
-            ),
             );
         "
       ></div>
@@ -328,8 +327,28 @@ export async function renderRegister() {
 
     </div>
 
+    <!-- HEADER -->
+    <header class="t-nav" style="position:fixed;">
+      <a href="#/" class="t-nav__logo">
+        <svg class="t-nav__logo-icon" fill="none" stroke="currentColor"
+             stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M2 10l10-7 10 7M10 14h4"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="t-nav__logo-text">
+          <span>Teatro</span><span>Eventual</span>
+        </div>
+      </a>
+      <div class="t-nav__actions">
+        <a href="#/login" class="t-back-btn">
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+          Iniciar Sesión
+        </a>
+      </div>
+    </header>
+
     <!-- CONTENT -->
-    <div class="relative z-10 min-h-screen flex items-center justify-center px-6 py-20">
+    <div class="relative z-10 min-h-screen flex items-center justify-center px-6 py-20" style="padding-top:calc(var(--nav-h) + 24px);">
 
       <section
         class="w-full max-w-[520px]
