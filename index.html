@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Gran Teatro - Vive la Magia</title>
+<meta name="theme-color" content="#0A0A0A"/>
+<meta name="description" content="Teatro Eventual — Vive la magia del teatro"/>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+<title>Teatro Eventual — Vive la Magia</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script>
   tailwind.config = {
@@ -97,6 +101,7 @@
 
   /* ── SPIN (loader) ── */
   @keyframes spin { to { transform: rotate(360deg); } }
+  .animate-spin { animation: spin 1s linear infinite; }
 
   /* ── NAV LINK UNDERLINE ── */
   .nav-link { position: relative; }
@@ -110,25 +115,125 @@
   }
   .nav-link:hover::after { width: 100%; }
 
-  /* ── GIFT CARD SHINE ── */
-  .gift-card-shine { position: relative; overflow: hidden; }
-  .gift-card-shine::after {
-    content: '';
-    position: absolute;
-    top: -50%; left: -75%;
-    width: 50%; height: 200%;
-    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%);
-    transform: skewX(-20deg);
-    transition: left 0.7s ease;
+  /* ── SEAT MAP ── */
+  .seat-btn {
+    width: 28px; height: 28px;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    display: flex; align-items: center; justify-content: center;
   }
-  .gift-card-shine:hover::after { left: 125%; }
+  .seat-available {
+    background: rgba(212,175,55,0.12);
+    border-color: rgba(212,175,55,0.4);
+    color: #D4AF37;
+  }
+  .seat-available:hover {
+    background: rgba(212,175,55,0.3);
+    border-color: #D4AF37;
+    transform: translateY(-2px);
+  }
+  .seat-selected {
+    background: #D4AF37;
+    border-color: #D4AF37;
+    color: #0A0A0A;
+    transform: translateY(-2px);
+  }
+  .seat-occupied {
+    background: rgba(107,17,29,0.3);
+    border-color: rgba(107,17,29,0.5);
+    color: #6B111D;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* ── GLASS CARD (login/register) ── */
+  .glass-card {
+    background: rgba(10,10,10,0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212,175,55,0.2);
+  }
+  .theatrical-glow {
+    box-shadow: 0 0 60px rgba(107,17,29,0.25), 0 0 120px rgba(107,17,29,0.1);
+  }
+
+  /* ── TOAST ── */
+  #toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .toast {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-left: 3px solid;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.3s ease both;
+    max-width: 320px;
+  }
+  .toast-success { border-color: #22c55e; color: #86efac; }
+  .toast-error   { border-color: #ef4444; color: #fca5a5; }
+  .toast-info    { border-color: #D4AF37; color: #D4AF37; }
+
+  /* ── STRIPE ELEMENTS ── */
+  .StripeElement {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,175,55,0.25);
+    padding: 12px 16px;
+    border-radius: 2px;
+    transition: border-color 0.2s;
+  }
+  .StripeElement--focus { border-color: rgba(212,175,55,0.7); }
+  .StripeElement--invalid { border-color: rgba(239,68,68,0.6); }
+
+  /* ── INPUT STYLE ── */
+  input, textarea, select {
+    background: rgba(255,255,255,0.05) !important;
+    border-color: rgba(212,175,55,0.2) !important;
+    color: #F5F1E8 !important;
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: rgba(212,175,55,0.6) !important;
+    box-shadow: 0 0 0 1px rgba(212,175,55,0.2) !important;
+  }
+  input::placeholder, textarea::placeholder { color: rgba(169,169,179,0.4) !important; }
+  select option { background: #0A0A0A; color: #F5F1E8; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: #0A0A0A; }
+  ::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 2px; }
 </style>
 </head>
 <body class="font-sans selection:bg-theatreGold selection:text-theatreDark">
 
-  <!-- El SPA monta aquí: home, login, register, dashboard -->
   <div id="app"></div>
 
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
 </body>
+<script>
+  // Toast global
+  window.showToast = function(msg, type = 'info', duration = 3500) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const el = document.createElement('div');
+    el.className = `toast toast-${type}`;
+    el.textContent = msg;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), duration);
+  };
+</script>
 <script type="module" src="./js/app.js"></script>
 </html>

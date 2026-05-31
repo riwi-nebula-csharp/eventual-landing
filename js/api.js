@@ -1,17 +1,20 @@
 /**
  * ============================================================
- *  api.js — Capa de servicios | Teatro Eventual
+ *  api.js — Auth Service | Teatro Eventual
  *  Base URL: https://service.auth.nebula.andrescortes.dev
  * ============================================================
  */
 
-const BASE_URL = 'https://service.auth.nebula.andrescortes.dev';
+const AUTH_URL = 'https://service.auth.nebula.andrescortes.dev';
 
-function buildHeaders(requiresAuth = false) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'Accept':       'application/json',
-  };
+function buildHeaders(requiresAuth = false, isFormData = false) {
+  const headers = {};
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+    headers['Accept']       = 'application/json';
+  } else {
+    headers['Accept'] = 'application/json';
+  }
   if (requiresAuth) {
     const token = localStorage.getItem('auth_token');
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -19,12 +22,12 @@ function buildHeaders(requiresAuth = false) {
   return headers;
 }
 
-async function request(endpoint, options = {}, auth = false) {
-  const url = `${BASE_URL}${endpoint}`;
+async function request(endpoint, options = {}, auth = false, isFormData = false) {
+  const url = `${AUTH_URL}${endpoint}`;
   try {
     const response = await fetch(url, {
       ...options,
-      headers: buildHeaders(auth),
+      headers: { ...buildHeaders(auth, isFormData), ...(options.headers || {}) },
     });
 
     let body = null;
@@ -41,23 +44,17 @@ async function request(endpoint, options = {}, auth = false) {
       success: body.success ?? response.ok,
       message: body.message ?? '',
       data:    body.data   ?? null,
+      errors:  body.errors ?? null,
       status:  response.status,
     };
 
   } catch (err) {
-    console.error('[API] Error de red:', err);
-    return {
-      success: false,
-      message: 'Sin conexión. Verifica tu red e intenta de nuevo.',
-      data:    null,
-      status:  0,
-    };
+    console.error('[API Auth] Error de red:', err);
+    return { success: false, message: 'Sin conexión. Verifica tu red.', data: null, status: 0 };
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  1. AUTENTICACIÓN PÚBLICA
-// ─────────────────────────────────────────────────────────────
+// ── Autenticación pública ──────────────────────────────────
 
 export async function register({ name, email, password, password_confirmation, phone = null }) {
   const body = { name, email, password, password_confirmation };
@@ -66,10 +63,7 @@ export async function register({ name, email, password, password_confirmation, p
 }
 
 export async function login({ email, password }) {
-  return request('/api/auth/login', {
-    method: 'POST',
-    body:   JSON.stringify({ email, password }),
-  });
+  return request('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
 }
 
 export async function loginWithGoogle() {
@@ -82,25 +76,20 @@ export async function loginWithGoogle() {
 }
 
 export async function forgotPassword({ email }) {
-  return request('/api/auth/forgot-password', {
+  return request('/api/auth/password/forgot', { method: 'POST', body: JSON.stringify({ email }) });
+}
+
+export async function resetPassword({ token, password, password_confirmation }) {
+  return request('/api/auth/password/reset', {
     method: 'POST',
-    body:   JSON.stringify({ email }),
+    body: JSON.stringify({ token, password, password_confirmation }),
   });
 }
 
-export async function resetPassword({ token, email, password, password_confirmation }) {
-  return request('/api/auth/reset-password', {
-    method: 'POST',
-    body:   JSON.stringify({ token, email, password, password_confirmation }),
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-//  2. AUTENTICACIÓN PROTEGIDA
-// ─────────────────────────────────────────────────────────────
+// ── Autenticación protegida ────────────────────────────────
 
 export async function me() {
-  return request('/api/auth/me', { method: 'GET' }, true);
+  return request('/api/profile', { method: 'GET' }, true);
 }
 
 export async function logout() {
@@ -108,30 +97,9 @@ export async function logout() {
 }
 
 export async function updateProfile(payload) {
-  return request('/api/auth/profile', {
-    method: 'PUT',
-    body:   JSON.stringify(payload),
-  }, true);
+  return request('/api/profile', { method: 'PUT', body: JSON.stringify(payload) }, true);
 }
 
-export async function changePassword({ current_password, password, password_confirmation }) {
-  return request('/api/auth/password', {
-    method: 'PUT',
-    body:   JSON.stringify({ current_password, password, password_confirmation }),
-  }, true);
-}
-
-// ─────────────────────────────────────────────────────────────
-//  3. VERIFICACIÓN DE EMAIL
-// ─────────────────────────────────────────────────────────────
-
-export async function resendVerificationEmail() {
-  return request('/api/auth/email/resend', { method: 'POST' }, true);
-}
-
-export async function verifyEmail({ code }) {
-  return request('/api/auth/email/verify', {
-    method: 'POST',
-    body:   JSON.stringify({ code }),
-  }, true);
+export async function uploadAvatar(formData) {
+  return request('/api/profile/avatar', { method: 'POST', body: formData }, true, true);
 }

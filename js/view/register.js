@@ -1,17 +1,12 @@
 /**
  * ============================================================
- *  view/register.js — Vista de registro
- *  Conectada a POST /api/auth/register
+ *  view/register.js — Vista de registro | Teatro Eventual
  * ============================================================
  */
 
-import { register }          from '../auth.js';
-import { loginWithGoogle }  from '../api.js';
-import { navigate }                  from '../router.js';
-
-// ─────────────────────────────────────────────────────────────
-//  Validaciones locales
-// ─────────────────────────────────────────────────────────────
+import { register }        from '../auth.js';
+import { loginWithGoogle } from '../api.js';
+import { navigate }        from '../router.js';
 
 function validateForm(data) {
   const errors = {};
@@ -33,15 +28,10 @@ function showFieldError(fieldId, msg) {
 
 function clearErrors() {
   document.querySelectorAll('[id^="err-"]').forEach(el => {
-    el.textContent = '';
-    el.classList.add('hidden');
+    el.textContent = ''; el.classList.add('hidden');
   });
   document.getElementById('registerError')?.classList.add('hidden');
 }
-
-// ─────────────────────────────────────────────────────────────
-//  Handler del formulario
-// ─────────────────────────────────────────────────────────────
 
 async function handleSubmit(e) {
   e.preventDefault();
@@ -56,14 +46,12 @@ async function handleSubmit(e) {
     password_confirmation: document.getElementById('confirm_password').value,
   };
 
-  // Validación client-side
   const errors = validateForm(data);
   if (Object.keys(errors).length > 0) {
     Object.entries(errors).forEach(([field, msg]) => showFieldError(field, msg));
     return;
   }
 
-  // ── UI: cargando ──
   btn.disabled  = true;
   btn.innerHTML = `<span class="material-symbols-outlined animate-spin" style="font-size:20px;">progress_activity</span> Creando cuenta...`;
 
@@ -71,20 +59,17 @@ async function handleSubmit(e) {
 
   if (res.success) {
     btn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> ¡Cuenta Creada!`;
-    btn.classList.remove('bg-[#800020]', 'hover:bg-[#a00028]');
     btn.classList.add('bg-green-800');
     window.showToast?.(`Bienvenido, ${res.user?.name ?? ''}`, 'success');
-    setTimeout(() => navigate('dashboard'), 800);
+    setTimeout(() => navigate('cartelera'), 800);
     return;
   }
 
-  // ── Error del servidor ──
   btn.disabled  = false;
   btn.innerHTML = `Crear Cuenta <span class="material-symbols-outlined">arrow_forward</span>`;
 
-  // Si la API devuelve errores de validación por campo (422)
-  if (res.data && typeof res.data === 'object') {
-    Object.entries(res.data).forEach(([field, msgs]) => {
+  if (res.errors && typeof res.errors === 'object') {
+    Object.entries(res.errors).forEach(([field, msgs]) => {
       showFieldError(field, Array.isArray(msgs) ? msgs[0] : msgs);
     });
   } else {
@@ -96,64 +81,40 @@ async function handleSubmit(e) {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-//  Campo helper
-// ─────────────────────────────────────────────────────────────
-
 function fieldHTML({ id, label, type = 'text', placeholder, icon, required = true }) {
   return `
     <div>
-      <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1.5 ml-1" for="${id}">
-        ${label}${required ? ' <span class="text-error opacity-70">*</span>' : ''}
+      <label class="block text-[10px] text-theatreGray uppercase tracking-widest mb-1.5 ml-1" for="${id}">
+        ${label}${required ? ' <span class="text-red-400 opacity-70">*</span>' : ''}
       </label>
       <div class="relative">
         <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2
-                     text-on-surface-variant text-[20px]">${icon}</span>
+                     text-theatreGray/50 text-[20px]">${icon}</span>
         <input id="${id}" type="${type}" placeholder="${placeholder}" ${required ? 'required' : ''}
-               class="w-full bg-surface-container-low border border-outline-variant text-on-surface
-                      rounded-lg py-3 pl-12 pr-4 font-body-md input-theatre transition-all
-                      placeholder:text-on-surface-variant/30"/>
+               class="w-full border py-3 pl-12 pr-4 text-sm rounded-sm outline-none transition-all
+                      placeholder:text-theatreGray/30"/>
       </div>
-      <p id="err-${id}" class="hidden text-error text-xs mt-1 ml-1"></p>
+      <p id="err-${id}" class="hidden text-red-400 text-xs mt-1 ml-1"></p>
     </div>`;
 }
 
-// ─────────────────────────────────────────────────────────────
-//  Render
-// ─────────────────────────────────────────────────────────────
-
 export async function renderRegister() {
-
-  const appEl = document.querySelector('#app');
-  if (appEl) {
-    appEl.addEventListener('view:mounted', () => {
+  requestAnimationFrame(() => {
       document.getElementById('registerForm')?.addEventListener('submit', handleSubmit);
       document.getElementById('btnGoogle')?.addEventListener('click', () => loginWithGoogle());
-
-      // Tilt effect en la card
-      const card = document.querySelector('.glass-card');
-      if (card) {
-        document.addEventListener('mousemove', (ev) => {
-          const xAxis = (window.innerWidth  / 2 - ev.pageX) / 60;
-          const yAxis = (window.innerHeight / 2 - ev.pageY) / 60;
-          card.style.transform = `perspective(1000px) rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
-      }
-    }, { once: true });
-  }
+  });
 
   return `
-    <!-- Fondo -->
     <div class="fixed inset-0 z-0">
-      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50 z-10"></div>
+      <div class="absolute inset-0 z-10"
+           style="background:linear-gradient(to top,rgba(10,10,10,0.9) 0%,rgba(10,10,10,0.4) 60%,rgba(10,10,10,0.6) 100%);"></div>
       <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw2dA63c716tE0K5Wqqj2GAJfPV0KQzZH6GD8N5Sp-8mkJxYKGachKfiXHBXZWeNuk1A_Li60e6z07FAa5IZ01YSsip_eifZ6zqAi82ZtmOa3DLBlfjRvylbP4Ahx291a7LmqiNZjD5F3AMRDUQ_vtv0MVfaDcK7_YEFXRsMbEX8L_kMG81dERdhpc7kHPOxsR4FRY1pbqGEA0Fb0IdQw9YnhEKuNHmpkTajNCa6UO1fm-V2JICwSafoQF0w7LqcXOzvytc87GS2wK"
            alt="Teatro" class="w-full h-full object-cover opacity-60"/>
     </div>
 
-    <!-- Header -->
     <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center
-                   px-gutter py-4 bg-surface/40 backdrop-blur-md border-b border-outline-variant/30">
-      <a href="#/" class="font-headline-md font-bold tracking-tight text-tertiary text-xl">
+                   px-6 py-4 bg-theatreDark/40 backdrop-blur-md border-b border-white/10">
+      <a href="#/" class="font-serif font-bold tracking-tight text-theatreGold text-xl">
         Teatro Eventual
       </a>
       <a href="#/login"
@@ -162,103 +123,74 @@ export async function renderRegister() {
       </a>
     </header>
 
-    <!-- Main -->
-    <main class="relative z-20 flex-grow flex items-center justify-center
-                 px-4 pt-28 pb-16 min-h-screen">
+    <main class="relative z-20 flex items-center justify-center px-4 pt-28 pb-16 min-h-screen">
+      <div class="glass-card theatrical-glow w-full max-w-lg p-8 md:p-10">
 
-      <div class="glass-card theatrical-glow w-full max-w-lg p-8 md:p-10 rounded-xl">
-
-        <!-- Encabezado -->
         <div class="text-center mb-8">
-          <h1 class="font-headline-md text-tertiary leading-tight mb-2" style="font-size:2.25rem;">
+          <h1 class="font-serif text-theatreGold leading-tight mb-2" style="font-size:2.25rem;">
             Crear Cuenta
           </h1>
-          <p class="font-body-md text-on-surface-variant text-sm">
-            Únete y accede a experiencias exclusivas.
-          </p>
+          <p class="text-theatreGray text-sm">Únete y accede a experiencias exclusivas.</p>
         </div>
 
-        <!-- Error global -->
         <div id="registerError"
-             class="hidden mb-5 bg-error-container/40 border border-error/30 text-error rounded-lg px-4 py-3 text-sm">
+             class="hidden mb-5 bg-red-900/40 border border-red-700/30 text-red-300 px-4 py-3 text-sm">
         </div>
 
-        <!-- Formulario -->
         <form id="registerForm" class="space-y-4" novalidate>
+          ${fieldHTML({ id: 'name',  label: 'Nombre completo',    placeholder: 'Ej. Juan Pérez',     icon: 'person' })}
+          ${fieldHTML({ id: 'email', label: 'Correo electrónico', type: 'email', placeholder: 'email@ejemplo.com', icon: 'mail' })}
+          ${fieldHTML({ id: 'phone', label: 'Teléfono',           type: 'tel',  placeholder: '+57 300 1234567',   icon: 'call', required: false })}
 
-          ${fieldHTML({ id: 'name',  label: 'Nombre completo', placeholder: 'Ej. Juan Pérez',      icon: 'person'  })}
-          ${fieldHTML({ id: 'email', label: 'Correo electrónico', type: 'email', placeholder: 'email@ejemplo.com', icon: 'mail'   })}
-          ${fieldHTML({ id: 'phone', label: 'Teléfono',  type: 'tel',  placeholder: '+57 300 1234567', icon: 'call', required: false })}
-
-          <!-- Contraseñas en grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1.5 ml-1" for="password">
-                Contraseña <span class="text-error opacity-70">*</span>
+              <label class="block text-[10px] text-theatreGray uppercase tracking-widest mb-1.5 ml-1" for="password">
+                Contraseña <span class="text-red-400 opacity-70">*</span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2
-                             text-on-surface-variant text-[20px]">lock</span>
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-theatreGray/50 text-[20px]">lock</span>
                 <input id="password" type="password" placeholder="••••••••" required
-                       class="w-full bg-surface-container-low border border-outline-variant text-on-surface
-                              rounded-lg py-3 pl-12 pr-4 font-body-md input-theatre transition-all
-                              placeholder:text-on-surface-variant/30"/>
+                       class="w-full border py-3 pl-12 pr-4 text-sm rounded-sm outline-none transition-all"/>
               </div>
-              <p id="err-password" class="hidden text-error text-xs mt-1 ml-1"></p>
+              <p id="err-password" class="hidden text-red-400 text-xs mt-1 ml-1"></p>
             </div>
             <div>
-              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-1.5 ml-1" for="confirm_password">
-                Confirmar <span class="text-error opacity-70">*</span>
+              <label class="block text-[10px] text-theatreGray uppercase tracking-widest mb-1.5 ml-1" for="confirm_password">
+                Confirmar <span class="text-red-400 opacity-70">*</span>
               </label>
               <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2
-                             text-on-surface-variant text-[20px]">verified_user</span>
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-theatreGray/50 text-[20px]">verified_user</span>
                 <input id="confirm_password" type="password" placeholder="••••••••" required
-                       class="w-full bg-surface-container-low border border-outline-variant text-on-surface
-                              rounded-lg py-3 pl-12 pr-4 font-body-md input-theatre transition-all
-                              placeholder:text-on-surface-variant/30"/>
+                       class="w-full border py-3 pl-12 pr-4 text-sm rounded-sm outline-none transition-all"/>
               </div>
-              <p id="err-password_confirmation" class="hidden text-error text-xs mt-1 ml-1"></p>
+              <p id="err-password_confirmation" class="hidden text-red-400 text-xs mt-1 ml-1"></p>
             </div>
           </div>
 
-          <!-- Submit -->
           <button id="registerBtn" type="submit"
-                  class="w-full bg-[#800020] hover:bg-[#a00028] text-white font-headline-md
-                         py-4 rounded-lg mt-2 transition-all duration-300 shadow-xl active:scale-[0.98]
-                         transform flex items-center justify-center gap-2">
+                  class="w-full bg-theatreBurgundy hover:brightness-110 text-white font-bold
+                         py-4 mt-2 transition-all duration-300 active:scale-[0.98]
+                         flex items-center justify-center gap-2 text-[11px] tracking-widest uppercase">
             Crear Cuenta
             <span class="material-symbols-outlined">arrow_forward</span>
           </button>
 
-          <!-- Google OAuth -->
           <button id="btnGoogle" type="button"
-                  class="w-full flex items-center justify-center gap-2 border border-outline-variant
-                         hover:bg-surface-container-high py-3.5 rounded-lg transition-colors group">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWLpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D"
+                  class="w-full flex items-center justify-center gap-2 border border-white/15
+                         hover:bg-white/5 py-3.5 transition-colors group">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVkZmvvF6JUEx71KFVvp3wjfOMdup0n6M2HiMZttyFruVbHpLEN3wpPGLt3X-Gq8enWlK6pmZhM0C2ztbEHDI-y9S_lxWlpUoSkzXUrYrgFdMnqyrI4swfpFLGJAmlC2kWwY6fuX49VuVDs2lPOgPhb61k-69GDub84AAoXTGPL-AMjiHPrGlfgNDkW5Onky12IcC0zLf93zFenM14Dl8CtFXcJqx1SWMO6y28nx-sHJJJNbhUMkZ0zbKZaWrXYW4XWXkkRedQdc3D"
                  alt="Google" class="w-5 h-5 grayscale group-hover:grayscale-0 transition-all"/>
-            <span class="font-label-sm">Registrarse con Google</span>
+            <span class="text-theatreGray text-sm group-hover:text-theatreBeige transition-colors">
+              Registrarse con Google
+            </span>
           </button>
 
-          <!-- Link a login -->
-          <p class="text-center font-body-md text-on-surface-variant text-sm">
+          <p class="text-center text-theatreGray text-sm">
             ¿Ya tienes cuenta?
-            <a href="#/login" class="text-tertiary font-bold hover:underline ml-1">Inicia sesión</a>
+            <a href="#/login" class="text-theatreGold font-bold hover:underline ml-1">Inicia sesión</a>
           </p>
-
         </form>
       </div>
     </main>
-
-    <!-- Footer mínimo -->
-    <footer class="relative z-20 w-full bg-surface-container-lowest/80 backdrop-blur-xl
-                   border-t border-outline-variant/30 py-6 px-gutter">
-      <div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        <span class="font-headline-md font-bold text-tertiary">Teatro Eventual</span>
-        <p class="font-label-sm text-on-surface-variant text-xs">
-          © 2026 Teatro Eventual — Sistema de Gestión Escénica
-        </p>
-      </div>
-    </footer>
   `;
 }

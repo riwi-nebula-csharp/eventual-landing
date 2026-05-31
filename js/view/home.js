@@ -1,129 +1,95 @@
 /**
  * ============================================================
- *  view/home.js — Vista principal (Landing)
- *  Teatro Eventual
+ *  view/home.js — Landing pública | Teatro Eventual
  * ============================================================
  */
 
-import { isAuthenticated, getUser } from '../auth.js';
-import { navigate }                 from '../router.js';
+import { isAuthenticated } from '../auth.js';
+import { navigate }        from '../router.js';
+import { getPlays }        from '../api.events.js';
 
-// ─────────────────────────────────────────────────────────────
-//  Datos de cartelera (en producción vendrían de la API)
-// ─────────────────────────────────────────────────────────────
-const SHOWS = [
-  {
-    title: 'La Bella y<br/>la Bestia',
-    genre: 'Musical',
-    date:  '24 MAY • 20:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuCQKrU5Rk9yUX0U0CY-W5C3ciz4Pz3FGg7k8GPCDM3Xjc35Fe7f5ccufTQfxfdjnteM8ZSx73NAjIg7dnbU462HwA-i9YISpB2VR5FEVRsyYD-AHR8rs4ogtff_me--z59Zzp1HPj7s3bBwv9LbvrLLZtu3xdn7Te_NmzUFw13qLIe3Xg7rtDCxC4p_Ew2Y5oC9bPMFwxYE8VvjMbcQEbuHJJRSAoHPXRHB4jx3NXZUjjnBZ5Wft8v9RSy_AkXvh-V0n2muXWvGPgmB',
-  },
-  {
-    title: 'El Fantasma<br/>de la Ópera',
-    genre: 'Musical',
-    date:  '25 MAY • 19:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuDxZXrYfiL6E1ZhVAi-rDdbinzAiDjIqbCSvViaTo6EGwwUJu3fL1zdDEX5ad5rS5UGCZ1-jABkXSRwdU730DBkUzG2wmJF02awW39aDO-Mb1_0rUstDl6oWf_fVwYJTTm5gQ9YpZxcclf3eWUvyeeaiEozggUV898u0fRjEFbl18yX9fYNU3NvEUW4EJyZRNPIDnRvxpHNj3-DiyBzJNK2jvGVS-WosRVIQHHSZz4cX9GQ_w3_3AMeZeb8kI52AdqMyQ1yQiSGnfDH',
-  },
-  {
-    title: 'Los<br/>Miserables',
-    genre: 'Drama',
-    date:  '25 MAY • 19:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuBTZlRRvX_Sv6cB2BBsvWh-HWJtbhq-lYj8ZBgokIJNd0zD5XcU-xibfQbcrz_ODlzHgX1ugFkiHhXMpPia0dKKYca3A7EdUbTrmExq5e-jLlJ0EPM4JVUjDUwqPve4yJC4u2jfGPfUEg3oneaC9gx5TKVwzUC0I6u0as2y5nwkpbGm8bxyk_JX21fze9xtwQOKD6AsVa26OB6WeeEiiY8Tx-HOjCxmG5-8BSntLGcg9g2ZnemoVDy1pok3FlhqR4Rque_tJ6khNG5N',
-  },
-  {
-    title: 'El Lago<br/>de los Cisnes',
-    genre: 'Ballet',
-    date:  '29 MAY • 18:00',
-    room:  'Sala Principal',
-    img:   'https://lh3.googleusercontent.com/aida-public/AB6AXuBMf8Eltu4RdWgeg8azB1XKFELibTQ5XbzlPaRkvKSNS_C8a8YaJ5r3bL1F6hE5iBFLncjE8wFuzTNWCh431mEpSsVpdiFaOvDYAPkkajzLYPthcTKGpDs9b6ZVhOqIMlHexzf7cr9U-YM_FuKMv3gIsOD3z7WjL3DH46_JlOefFtt0Pulwmb1sEIG9kS7bXu93lQ7uQS6Jh-GnaEYueaA0KxQyeB2Xs9x3Rm2LIu0jXYDAreRk_zxuYK0A6UG0vSm9LsacUDXgYFJm',
-  },
-];
+// ── Helpers ───────────────────────────────────────────────
 
-// ─────────────────────────────────────────────────────────────
-//  Helpers de plantilla
-// ─────────────────────────────────────────────────────────────
-
-function cardHTML({ title, genre, date, room, img }) {
+function playCardHTML(play) {
   return `
     <div class="card-border-frame p-6 bg-black/40 flex flex-col group
-                hover:border-theatreGold/60 transition-colors duration-500">
+                hover:border-theatreGold/60 transition-colors duration-500 cursor-pointer"
+         data-play-id="${play.id}">
       <div class="aspect-[4/5] mb-6 overflow-hidden">
-        <img src="${img}" alt="${title.replace(/<br\/>/g,' ')}"
-             class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"/>
+        ${play.posterUrl
+          ? `<img src="${play.posterUrl}" alt="${play.name}"
+                  class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"/>`
+          : `<div class="w-full h-full bg-theatreBurgundy/20 flex items-center justify-center">
+               <span class="material-symbols-outlined text-theatreGold/30" style="font-size:3rem;">theater_comedy</span>
+             </div>`
+        }
       </div>
       <h3 class="text-theatreGold font-serif text-lg text-center mb-6 uppercase
-                 tracking-[0.1em] leading-tight px-2 h-10 flex items-center justify-center">
-        ${title}
+                 tracking-[0.1em] leading-tight px-2 min-h-[2.5rem] flex items-center justify-center">
+        ${play.name}
       </h3>
-      <div class="space-y-2 text-left text-[10px] text-theatreGray mb-8 px-2 font-light">
-        <p class="opacity-60">${genre}</p>
-        <p class="flex items-center tracking-wider">
-          <span class="material-symbols-outlined text-[12px] mr-2 text-theatreGold">calendar_today</span>
-          ${date}
-        </p>
-        <p class="flex items-center tracking-wider">
-          <span class="material-symbols-outlined text-[12px] mr-2 text-theatreGold">location_on</span>
-          ${room}
-        </p>
+      ${play.description ? `
+        <p class="text-theatreGray text-xs text-center mb-4 font-light leading-relaxed line-clamp-2 px-2">
+          ${play.description}
+        </p>` : ''}
+      <div class="mt-auto">
+        <button class="btn-ver-funciones relative z-10 w-full py-2.5 bg-theatreBurgundy text-white text-[10px]
+                       font-bold tracking-[0.15em] hover:brightness-110 transition-all uppercase"
+                data-play-id="${play.id}">
+          Ver Funciones
+        </button>
       </div>
-      <button class="relative z-10 w-full py-2.5 bg-theatreBurgundy text-white text-[10px]
-                     font-bold tracking-[0.15em] hover:brightness-110 transition-all uppercase">
-        Ver Detalles
-      </button>
     </div>`;
 }
 
-function navAuthButtons() {
-  if (isAuthenticated()) {
-    const user = getUser();
-    return `
-      <span class="text-theatreGray text-[9px] tracking-widest hidden md:block">
-        Hola, ${user?.name?.split(' ')[0] ?? 'Usuario'}
-      </span>
-      <button id="btn-dashboard"
-              class="px-4 py-2 bg-theatreGold text-theatreDark text-[9px] font-bold
-                     tracking-[0.1em] hover:brightness-110 transition-all duration-300">
-        MI CUENTA
-      </button>`;
-  }
+function skeletonCard() {
   return `
-    <a href="#/login"
-       class="px-4 py-2 border border-white/20 text-[9px] font-semibold tracking-[0.1em]
-              hover:bg-white/5 transition-all duration-300 text-theatreBeige">
-      INICIAR SESIÓN
-    </a>
-    <a href="#/register"
-       class="px-4 py-2 bg-theatreBurgundy text-white text-[9px] font-semibold
-              tracking-[0.1em] hover:brightness-110 transition-all duration-300">
-      REGISTRARSE
-    </a>`;
+    <div class="card-border-frame p-6 bg-black/40 animate-pulse">
+      <div class="aspect-[4/5] mb-6 bg-white/5 rounded"></div>
+      <div class="h-4 bg-white/5 rounded mb-3 mx-4"></div>
+      <div class="h-3 bg-white/5 rounded mb-2 mx-8"></div>
+      <div class="h-8 bg-white/5 rounded mt-6"></div>
+    </div>`;
 }
 
-// ─────────────────────────────────────────────────────────────
-//  Render
-// ─────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────
 
 export async function renderHome() {
+  const authed = isAuthenticated();
 
-  // Registrar handlers ANTES de retornar (se ejecutan tras view:mounted)
-  const app = document.querySelector('#app');
-  if (app) {
-    app.addEventListener('view:mounted', () => {
-      document.getElementById('btn-dashboard')?.addEventListener('click', () => navigate('dashboard'));
-    }, { once: true });
+  // Si está autenticado, ir directo a cartelera
+  if (authed) {
+    navigate('cartelera');
+    return '<div></div>';
   }
 
+  // Cargar obras de la API para mostrar en la landing pública
+  let plays = [];
+  let loadError = false;
+  try {
+    const res = await getPlays();
+    if (res.success && Array.isArray(res.data)) {
+      plays = res.data.slice(0, 4);
+    } else {
+      loadError = true;
+    }
+  } catch {
+    loadError = true;
+  }
+
+  setTimeout(() => {
+    document.querySelectorAll('.btn-ver-funciones').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.showToast?.('Inicia sesión para comprar entradas.', 'info');
+        navigate('login');
+      });
+    });
+  }, 0);
+
   return `
-    <!-- ══════════════════════════════════════════
-         HEADER
-    ════════════════════════════════════════════ -->
+    <!-- HEADER -->
     <header class="fixed top-0 w-full z-50 bg-theatreDark/80 backdrop-blur-md border-b border-white/5">
       <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
-        <!-- Logo -->
         <div class="flex items-center space-x-3">
           <div class="flex flex-col items-center">
             <svg class="w-10 h-10 text-theatreGold" fill="none" stroke="currentColor"
@@ -132,36 +98,29 @@ export async function renderHome() {
                     stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span class="text-[9px] tracking-[0.3em] font-serif text-theatreGold mt-1 leading-none uppercase">
-              eventual Teatro
+              Eventual Teatro
             </span>
           </div>
         </div>
-
-        <!-- Nav Links -->
-        <div class="hidden md:flex items-center space-x-8 text-[10px] font-medium tracking-[0.15em] uppercase text-theatreGray">
-          <a class="nav-link text-theatreGold" href="#/">Inicio</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#cartelera">Cartelera</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#">Nosotros</a>
-          <a class="nav-link hover:text-theatreGold transition-colors" href="#">Contacto</a>
-        </div>
-
-        <!-- Auth Buttons -->
         <div class="flex items-center space-x-3">
-          ${navAuthButtons()}
+          <a href="#/login"
+             class="px-4 py-2 border border-white/20 text-[9px] font-semibold tracking-[0.1em]
+                    hover:bg-white/5 transition-all duration-300 text-theatreBeige">
+            INICIAR SESIÓN
+          </a>
+          <a href="#/register"
+             class="px-4 py-2 bg-theatreBurgundy text-white text-[9px] font-semibold
+                    tracking-[0.1em] hover:brightness-110 transition-all duration-300">
+            REGISTRARSE
+          </a>
         </div>
       </nav>
     </header>
 
-    <!-- ══════════════════════════════════════════
-         HERO
-    ════════════════════════════════════════════ -->
-    <section class="hero-section" style="position:relative;height:100vh;display:flex;align-items:center;overflow:hidden;">
-      <div class="hero-bg" style="position:absolute;inset:0;z-index:0;"></div>
-      <div class="hero-overlay" style="position:absolute;inset:0;z-index:1;
-        background: linear-gradient(to right, rgba(10,10,10,1) 0%, rgba(10,10,10,.85) 40%, rgba(10,10,10,.2) 70%, rgba(10,10,10,0) 100%),
-                    linear-gradient(to top, rgba(10,10,10,.7) 0%, rgba(10,10,10,0) 40%),
-                    linear-gradient(to bottom, rgba(10,10,10,.5) 0%, rgba(10,10,10,0) 20%);"></div>
-
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
       <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
         <div class="max-w-2xl">
           <p class="fade-up text-theatreGold text-[10px] tracking-[0.4em] uppercase font-medium mb-4 opacity-80">
@@ -181,62 +140,59 @@ export async function renderHome() {
                       uppercase hover:brightness-110 transition-all duration-300">
               VER CARTELERA
             </a>
-            ${isAuthenticated()
-              ? `<button id="btn-hero-dashboard"
-                         class="px-8 py-3 border border-theatreGold/50 text-theatreGold text-[11px]
-                                font-bold tracking-[0.2em] uppercase hover:bg-theatreGold/10 transition-all duration-300">
-                   MI CUENTA
-                 </button>`
-              : `<a href="#/login"
-                   class="px-8 py-3 border border-theatreGold/50 text-theatreGold text-[11px]
-                          font-bold tracking-[0.2em] uppercase hover:bg-theatreGold/10 transition-all duration-300">
-                   RESERVAR ENTRADAS
-                 </a>`
-            }
+            <a href="#/login"
+               class="px-8 py-3 border border-theatreGold/50 text-theatreGold text-[11px]
+                      font-bold tracking-[0.2em] uppercase hover:bg-theatreGold/10 transition-all duration-300">
+              RESERVAR ENTRADAS
+            </a>
           </div>
         </div>
       </div>
-
-      <!-- Scroll hint -->
       <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center space-y-2 opacity-40">
         <span class="text-[8px] tracking-[0.3em] uppercase text-white">Desplaza</span>
         <div class="w-px h-10 bg-white/30 animate-pulse"></div>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         CARTELERA
-    ════════════════════════════════════════════ -->
+    <!-- CARTELERA -->
     <section class="py-24 bg-theatreDark relative" id="cartelera">
       <div class="max-w-7xl mx-auto px-6">
-        <!-- Título -->
         <div class="text-center mb-20">
           <h2 class="text-theatreGold text-2xl tracking-[0.3em] font-serif uppercase mb-4">
-            Próximas Funciones
+            Cartelera
           </h2>
           <div class="flex items-center justify-center space-x-4">
             <div class="w-12 h-px bg-theatreGold/30"></div>
             <div class="w-2 h-2 rotate-45 border border-theatreGold/40"></div>
             <div class="w-12 h-px bg-theatreGold/30"></div>
           </div>
+          <p class="mt-4 text-theatreGray text-sm">
+            <a href="#/login" class="text-theatreGold hover:underline">Inicia sesión</a>
+            para comprar tus entradas
+          </p>
         </div>
-        <!-- Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          ${SHOWS.map(cardHTML).join('')}
+          ${loadError
+            ? `<div class="col-span-4 text-center text-theatreGray py-12">
+                 <span class="material-symbols-outlined text-4xl mb-3 block text-theatreGold/40">theater_comedy</span>
+                 No se pudo cargar la cartelera en este momento.
+               </div>`
+            : plays.length > 0
+              ? plays.map(playCardHTML).join('')
+              : [1,2,3,4].map(skeletonCard).join('')
+          }
         </div>
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         FEATURES BAR
-    ════════════════════════════════════════════ -->
+    <!-- FEATURES -->
     <section class="bg-black py-16 border-t border-white/5">
       <div class="max-w-7xl mx-auto px-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
           ${[
             { icon: 'confirmation_number', title: 'Reserva en Línea',   desc: 'Compra tus entradas de forma segura desde cualquier dispositivo.' },
-            { icon: 'star',               title: 'Experiencia Única',   desc: 'Más de 50 años llevando el mejor teatro a tu ciudad.'             },
-            { icon: 'workspace_premium',  title: 'Palcos Exclusivos',   desc: 'Acceso prioritario para miembros y abonados de temporada.'         },
+            { icon: 'star',               title: 'Experiencia Única',   desc: 'Llevando el mejor teatro a tu ciudad.' },
+            { icon: 'workspace_premium',  title: 'Boleta Digital',      desc: 'Recibe tu código QR y preséntalo en la puerta del teatro.' },
           ].map(f => `
             <div class="flex flex-col items-center">
               <span class="material-symbols-outlined text-theatreGold text-4xl mb-4">${f.icon}</span>
@@ -248,18 +204,14 @@ export async function renderHome() {
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════════
-         FOOTER
-    ════════════════════════════════════════════ -->
+    <!-- FOOTER -->
     <footer class="bg-black py-12 border-t border-white/5">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <div class="flex flex-col items-center">
-          <span class="font-serif text-theatreGold tracking-[0.3em] uppercase text-sm mb-2">
-            Teatro Eventual
-          </span>
+          <span class="font-serif text-theatreGold tracking-[0.3em] uppercase text-sm mb-2">Teatro Eventual</span>
           <div class="w-8 h-px bg-theatreGold/20 mb-6"></div>
           <p class="text-[8px] text-theatreGray/40 uppercase tracking-[0.5em] font-medium">
-            © 2025 Gran Teatro. Todos los derechos reservados.
+            © 2025 Teatro Eventual. Todos los derechos reservados.
           </p>
         </div>
       </div>
