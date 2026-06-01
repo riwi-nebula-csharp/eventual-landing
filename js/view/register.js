@@ -12,7 +12,7 @@ function validateForm(data) {
   const errors = {};
   if (!data.name || data.name.trim().length < 2)
     errors.name = 'El nombre debe tener al menos 2 caracteres.';
-  if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+  if (!data.email || !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(data.email))
     errors.email = 'Ingresa un correo electrónico válido.';
   if (!data.password || data.password.length < 8)
     errors.password = 'La contraseña debe tener mínimo 8 caracteres.';
