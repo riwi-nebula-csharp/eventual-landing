@@ -8,7 +8,8 @@ import { navigate } from '../router.js';
 import { me }       from '../api.js';
 
 export async function renderCallback() {
-  const params = new URLSearchParams(window.location.search);
+  const hashQuery = window.location.hash.split('?')[1] || '';
+  const params = new URLSearchParams(hashQuery);
   const token  = params.get('token');
 
   if (!token) {
