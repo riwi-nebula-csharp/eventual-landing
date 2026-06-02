@@ -101,7 +101,7 @@ async function resolve() {
   const app = document.querySelector(APP_CONTAINER);
   if (!app) return;
 
-  const hash = window.location.hash.replace(/^#\/?/, '');
+  const hash = window.location.hash.replace(/^#\/?/, '').split('?')[0];
   const path = hash === '' ? '/' : hash;
 
   const matched = matchRoute(path);
